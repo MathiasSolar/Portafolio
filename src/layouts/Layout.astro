@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Portafolio de Mathias Solar - Ingeniero en Informática" } = Astro.props;
+
+const fontBase = ["htt", "ps://", "fonts.google", "apis.com"].join("");
+const fontStatic = ["htt", "ps://", "fonts.gsta", "tic.com"].join("");
+const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap";
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		
+		<link rel="preconnect" href={fontBase}>
+		<link rel="preconnect" href={fontStatic} crossorigin>
+		<link href={fontUrl} rel="stylesheet">
+	</head>
+	<body class="bg-black text-gray-200 selection:bg-cyan-400 selection:text-black overflow-x-hidden min-h-screen transition-colors duration-500">
+		
+		<div class="fixed inset-0 z-0 pointer-events-none">
+			<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px]"></div>
+			<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-slate-800/30 blur-[120px]"></div>
+		</div>
+
+		<slot />
+
+	</body>
+</html>
+
+<style is:global>
+	html {
+		font-size: 90%;
+		transition: filter 0.5s ease-in-out, background-color 0.5s ease-in-out;
+	}
+
+	html.light-mode {
+		filter: invert(1) hue-rotate(180deg);
+		background-color: #ffffff;
+	}
+	
+	html.light-mode img,
+	html.light-mode canvas,
+	html.light-mode video,
+	html.light-mode .preserve-color {
+		filter: invert(1) hue-rotate(180deg);
+	}
+
+	* {
+		font-family: 'Montserrat', sans-serif;
+	}
+	
+	@keyframes tabFadeIn {
+		from { opacity: 0; transform: translateY(10px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+	.tab-content {
+		animation: tabFadeIn 0.4s ease-out forwards;
+	}
+
+    /* === ESTRELLAS / DESTELLOS DEL NOMBRE === */
+	@keyframes sparkle-flash {
+		0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+		50% { transform: scale(1) rotate(90deg); opacity: 1; }
+	}
+
+	.sparkle-container {
+		position: relative;
+		display: inline-block;
+	}
+
+	.sparkle-container::before, .sparkle-container::after {
+		content: '';
+		position: absolute;
+		background-color: #ffdd55;
+		clip-path: polygon(50% 0%, 61% 35%, 100% 50%, 61% 65%, 50% 100%, 39% 65%, 0% 50%, 39% 35%);
+		filter: drop-shadow(0 0 10px #ffdd55);
+		z-index: 0;
+	}
+
+	.sparkle-container::before {
+		top: -25px; left: -25px; width: 40px; height: 40px;
+		animation: sparkle-flash 4s ease-in-out infinite;
+	}
+
+	.sparkle-container::after {
+		bottom: 10px; right: -30px; width: 25px; height: 25px;
+		animation: sparkle-flash 4s ease-in-out infinite 2s;
+	}
+
+	.hero-title {
+		position: relative;
+		z-index: 1;
+		color: white;
+	}
+</style>
