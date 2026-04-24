@@ -29,7 +29,7 @@ export default function Hero() {
             {/* Aquí es donde se activan las estrellas gracias al CSS del Layout */}
             <div className="sparkle-container">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.1] mb-6 hero-title">
-                Mathias<br />Solar.
+                Mathias<br />Solar Alarcón
               </h1>
             </div>
           </RevealSection>

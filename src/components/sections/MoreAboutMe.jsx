@@ -18,12 +18,10 @@ export default function MoreAboutMe() {
   return (
     <div className="bg-black min-h-screen text-gray-200 selection:bg-cyan-400 selection:text-black font-sans pb-20">
       
-      {/* Redujimos el padding top de pt-40 a pt-32 */}
       <div className="max-w-6xl mx-auto pt-32 px-6 md:px-12">
         
         {/* --- BOTÓN VOLVER --- */}
         <RevealSection>
-          {/* Redujimos margen inferior de mb-24 a mb-10 */}
           <a href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-cyan-400 transition-colors mb-10 text-sm font-bold tracking-widest uppercase outline-none">
             <ArrowLeft className="w-4 h-4" /> {t.back}
           </a>
@@ -34,7 +32,6 @@ export default function MoreAboutMe() {
           <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight leading-tight mb-4 max-w-4xl">
             Más allá de las pantallas y el código.
           </h1>
-          {/* Redujimos margen inferior de mb-32 a mb-16 */}
           <p className="text-lg text-gray-400 font-light leading-relaxed max-w-3xl mb-16">
             {t.desc}
           </p>
@@ -59,16 +56,14 @@ export default function MoreAboutMe() {
           </div>
         </RevealSection>
 
-        {/* Separador más compacto (my-16 en lugar de my-24) */}
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-16"></div>
 
-        {/* --- SECCIÓN 2: SPOTIFY (TARJETA PANORÁMICA) --- */}
+        {/* --- SECCIÓN 2: SPOTIFY (TARJETA PANORÁMICA ARREGLADA) --- */}
         <RevealSection delay={300}>
           <div className="w-full bg-[#0d1117] border border-white/10 rounded-[2rem] p-6 md:p-10 relative overflow-hidden group hover:border-[#1DB954]/30 transition-all duration-500 shadow-xl mb-16">
             
             <div className="absolute -top-32 -right-32 w-80 h-80 bg-[#1DB954]/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-[#1DB954]/20 transition-all duration-500"></div>
 
-            {/* Redujimos el gap entre el texto y el reproductor de gap-12 a gap-8 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
               
               <div className="flex flex-col justify-center">
@@ -88,12 +83,13 @@ export default function MoreAboutMe() {
                 </p>
               </div>
 
-              <div className="w-full rounded-2xl overflow-hidden border border-white/5 bg-[#121212] shadow-xl transform transition-transform duration-500 hover:scale-[1.01]">
+              {/* Lado Derecho: Reproductor de Spotify con alto forzado y sin el fondo gris que sobraba */}
+              <div className="w-full h-[352px] ">
                 <iframe 
-                  style={{ borderRadius: '16px' }} 
-                  src="https://open.spotify.com/embed/playlist/3O8x5wBocu3LOfSiQnUQC7?utm_source=generator&theme=0" 
+                  style={{ borderRadius: '16px', backgroundColor: 'transparent' }} 
+                  src="https://open.spotify.com/embed/playlist/3O8x5wBocu3LOfSiQnUQC7?theme=0" 
                   width="100%" 
-                  height="280" 
+                  height="100%" 
                   frameBorder="0" 
                   allowFullScreen="" 
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
@@ -110,7 +106,6 @@ export default function MoreAboutMe() {
           <div className="w-full bg-gradient-to-br from-[#091428] to-[#0a0d14] border border-[#C89B3C]/30 rounded-[2rem] overflow-hidden relative group hover:border-[#C89B3C]/50 transition-all duration-500 shadow-xl flex flex-col lg:flex-row">
             
             {/* Lado Izquierdo: Imagen de Azir */}
-            {/* Redujimos la altura mínima de min-h-[350px] a min-h-[300px] */}
             <div className="w-full lg:w-[45%] relative min-h-[300px] lg:min-h-full overflow-hidden">
               <div className="absolute inset-0 bg-[url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg')] bg-cover bg-[center_top_-10%] transition-transform duration-1000 group-hover:scale-105"></div>
               <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#091428] via-[#091428]/50 to-transparent"></div>
@@ -131,7 +126,6 @@ export default function MoreAboutMe() {
             </div>
 
             {/* Lado Derecho: Textos y Estadísticas */}
-            {/* Redujimos padding interno de p-12 a p-8 */}
             <div className="w-full lg:w-[55%] p-6 md:p-10 flex flex-col justify-center relative z-10">
               <span className="text-[#C89B3C] font-bold tracking-widest uppercase text-xs mb-3 block">
                 02 / Competitividad
@@ -143,7 +137,7 @@ export default function MoreAboutMe() {
                 {t.lolDesc}
               </p>
 
-              {/* Grid de Estadísticas (Más compacto, gap-4 en lugar de gap-6) */}
+              {/* Grid de Estadísticas */}
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="bg-black/40 backdrop-blur-md border border-white/5 rounded-xl p-4">
                   <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#0AC8B9] uppercase tracking-widest mb-1.5">
