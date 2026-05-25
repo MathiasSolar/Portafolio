@@ -14,14 +14,69 @@ export default function Navbar({ currentPage }) {
   const [theme, setTheme] = useState('dark');
   const [isLangOpen, setIsLangOpen] = useState(false);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    if (newTheme === 'light') {
-      document.documentElement.classList.add('light-mode');
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-mode');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+      }
     } else {
-      document.documentElement.classList.remove('light-mode');
+      const isLight = document.documentElement.classList.contains('light-mode');
+      setTheme(isLight ? 'light' : 'dark');
     }
+  }, []);
+
+  const toggleTheme = (event) => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+
+    const updateDOM = () => {
+      setTheme(newTheme);
+      if (newTheme === 'light') {
+        document.documentElement.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+      }
+    };
+
+    if (
+      !document.startViewTransition ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      updateDOM();
+      return;
+    }
+
+    const x = event?.clientX ?? window.innerWidth / 2;
+    const y = event?.clientY ?? window.innerHeight / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      updateDOM();
+    });
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+          ]
+        },
+        {
+          duration: 650,
+          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+          pseudoElement: '::view-transition-new(root)'
+        }
+      );
+    });
   };
 
   useEffect(() => {
@@ -47,53 +102,53 @@ export default function Navbar({ currentPage }) {
 
   return (
     <>
-      <nav className={`fixed w-full z-40 transition-all duration-500 ${scrolled ? 'py-4 bg-black/80 backdrop-blur-md border-b border-white/10' : 'py-8 bg-transparent'}`}>
+      <nav className={`fixed w-full z-40 transition-all duration-500 ${scrolled ? 'py-4 bg-nav-bg backdrop-blur-md border-b border-main-border' : 'py-8 bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-          <a href="/" className="text-xl font-bold tracking-tighter text-white outline-none">M. SOLAR</a>
+          <a href="/" className="text-xl font-bold tracking-tighter text-primary-text outline-none">M. SOLAR</a>
           
-          <div className="hidden md:flex gap-8 text-[15px] tracking-wide text-white font-bold items-center">
-            <button onClick={() => handleNavClick('about')} className="hover:text-cyan-400 transition-colors outline-none">{t.profile}</button>
-            <button onClick={() => handleNavClick('experience')} className="hover:text-cyan-400 transition-colors outline-none">{t.experience}</button>
-            <button onClick={() => handleNavClick('projects')} className="hover:text-cyan-400 transition-colors outline-none">{t.projects}</button>
+          <div className="hidden md:flex gap-8 text-[15px] tracking-wide text-primary-text font-bold items-center">
+            <button onClick={() => handleNavClick('about')} className="hover:text-accent-cyan transition-colors outline-none cursor-pointer nav-link">{t.profile}</button>
+            <button onClick={() => handleNavClick('experience')} className="hover:text-accent-cyan transition-colors outline-none cursor-pointer nav-link">{t.experience}</button>
+            <button onClick={() => handleNavClick('projects')} className="hover:text-accent-cyan transition-colors outline-none cursor-pointer nav-link">{t.projects}</button>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
             <div className="relative">
-              <button onClick={() => setIsLangOpen(!isLangOpen)} className="flex items-center gap-1.5 p-2 text-gray-300 hover:text-white transition-colors outline-none"><Globe className="w-5 h-5" /><span className="text-sm font-bold hidden sm:block">{currentLang}</span></button>
+              <button onClick={() => setIsLangOpen(!isLangOpen)} className="flex items-center gap-1.5 p-2 text-secondary-text hover:text-primary-text transition-colors outline-none cursor-pointer"><Globe className="w-5 h-5" /><span className="text-sm font-bold hidden sm:block">{currentLang}</span></button>
               {isLangOpen && (
-                <div className="absolute top-full right-0 mt-2 w-32 bg-[#0d1117] border border-white/10 rounded-xl shadow-xl py-2 flex flex-col z-50 overflow-hidden">
+                <div className="absolute top-full right-0 mt-2 w-32 bg-card-bg border border-main-border rounded-xl shadow-xl py-2 flex flex-col z-50 overflow-hidden">
                   {['ES','EN'].map(l => (
-                    <button key={l} onClick={() => { langStore.set(l); setIsLangOpen(false); }} className={`text-left px-4 py-2.5 text-sm hover:bg-white/5 transition-colors outline-none ${currentLang === l ? 'text-cyan-400 font-bold bg-white/5' : 'text-gray-300'}`}>{l}</button>
+                    <button key={l} onClick={() => { langStore.set(l); setIsLangOpen(false); }} className={`text-left px-4 py-2.5 text-sm hover:bg-main-border/5 transition-colors outline-none cursor-pointer ${currentLang === l ? 'text-accent-cyan font-bold bg-main-border/10' : 'text-secondary-text'}`}>{l}</button>
                   ))}
                 </div>
               )}
             </div>
-            <button onClick={toggleTheme} className="p-2 text-gray-300 hover:text-white transition-colors outline-none preserve-color" aria-label="Cambiar Tema">
+            <button onClick={(e) => toggleTheme(e)} className="p-2 text-muted-text hover:text-primary-text transition-colors outline-none cursor-pointer" aria-label="Cambiar Tema">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            <button onClick={() => handleNavClick('contact')} className="px-5 py-2 border border-white/20 rounded-full text-[15px] font-bold hover:bg-white hover:text-black transition-all duration-300 hidden md:block ml-2">{t.contact}</button>
+            <button onClick={() => handleNavClick('contact')} className="px-5 py-2 border border-main-border rounded-full text-[15px] font-bold text-primary-text hover:bg-primary-text hover:text-main-bg transition-all duration-300 hidden md:block ml-2 cursor-pointer">{t.contact}</button>
             {/* Hamburguesa SIEMPRE visible */}
-            <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-white hover:text-cyan-400 transition-colors outline-none ml-1"><Menu className="w-7 h-7" /></button>
+            <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-primary-text hover:text-accent-cyan transition-colors outline-none ml-1 cursor-pointer"><Menu className="w-7 h-7" /></button>
           </div>
         </div>
       </nav>
 
       <div className={`fixed inset-0 z-[100] transition-all duration-300 ${isSidebarOpen ? 'visible' : 'invisible pointer-events-none'}`}>
         <div className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsSidebarOpen(false)} />
-        <div className={`absolute right-0 top-0 h-full w-72 md:w-80 bg-[#0d1117] border-l border-white/10 p-8 flex flex-col transform transition-transform duration-300 ease-out shadow-2xl ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`absolute right-0 top-0 h-full w-72 md:w-80 bg-card-bg border-l border-main-border p-8 flex flex-col transform transition-transform duration-300 ease-out shadow-2xl ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="flex justify-between items-center mb-12">
-            <span className="text-xl font-bold tracking-tighter text-white">{t.menu}</span>
-            <button onClick={() => setIsSidebarOpen(false)} className="text-gray-500 hover:text-white bg-white/5 p-2 rounded-full hover:bg-red-500/20 hover:text-red-400 transition-all outline-none"><X className="w-5 h-5" /></button>
+            <span className="text-xl font-bold tracking-tighter text-primary-text">{t.menu}</span>
+            <button onClick={() => setIsSidebarOpen(false)} className="text-muted-text hover:text-primary-text bg-main-border/5 p-2 rounded-full hover:bg-red-500/20 hover:text-red-400 transition-all outline-none cursor-pointer"><X className="w-5 h-5" /></button>
           </div>
-          <nav className="flex flex-col gap-6 text-lg font-medium text-gray-300">
-            <a href="/" className={`text-left outline-none transition-colors hover:text-cyan-400 ${currentPage === 'home' ? 'text-cyan-400' : ''}`}>{t.home}</a>
-            <div className="w-full h-px bg-white/10 my-2"></div>
-            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('about'); }} className="text-left outline-none hover:text-cyan-400 transition-colors">{t.profile}</button>
-            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('experience'); }} className="text-left outline-none hover:text-cyan-400 transition-colors">{t.experience}</button>
-            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('projects'); }} className="text-left outline-none hover:text-cyan-400 transition-colors">{t.projects}</button>
-            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('contact'); }} className="text-left outline-none hover:text-cyan-400 transition-colors md:hidden">{t.contact}</button>
-            <div className="w-full h-px bg-white/10 my-2"></div>
-            <a href="/sobre-mi" className={`text-left outline-none transition-colors hover:text-cyan-400 flex items-center gap-3 ${currentPage === 'about' ? 'text-cyan-400 font-bold' : ''}`}><Heart className="w-5 h-5" /> {t.aboutMe}</a>
+          <nav className="flex flex-col gap-6 text-lg font-medium text-secondary-text">
+            <a href="/" className={`text-left outline-none transition-colors hover:text-accent-cyan ${currentPage === 'home' ? 'text-accent-cyan' : ''}`}>{t.home}</a>
+            <div className="w-full h-px bg-main-border my-2"></div>
+            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('about'); }} className="text-left outline-none hover:text-accent-cyan transition-colors cursor-pointer">{t.profile}</button>
+            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('experience'); }} className="text-left outline-none hover:text-accent-cyan transition-colors cursor-pointer">{t.experience}</button>
+            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('projects'); }} className="text-left outline-none hover:text-accent-cyan transition-colors cursor-pointer">{t.projects}</button>
+            <button onClick={() => { setIsSidebarOpen(false); handleNavClick('contact'); }} className="text-left outline-none hover:text-accent-cyan transition-colors md:hidden cursor-pointer">{t.contact}</button>
+            <div className="w-full h-px bg-main-border my-2"></div>
+            <a href="/sobre-mi" className={`text-left outline-none transition-colors hover:text-accent-cyan flex items-center gap-3 ${currentPage === 'about' ? 'text-accent-cyan font-bold' : ''}`}><Heart className="w-5 h-5" /> {t.aboutMe}</a>
           </nav>
         </div>
       </div>

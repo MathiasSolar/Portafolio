@@ -26,12 +26,38 @@ const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800
 		<link rel="preconnect" href={fontBase}>
 		<link rel="preconnect" href={fontStatic} crossorigin>
 		<link href={fontUrl} rel="stylesheet">
+
+		<script is:inline>
+			(function() {
+				const theme = localStorage.getItem('theme') || 'dark';
+				if (theme === 'light') {
+					document.documentElement.classList.add('light-mode');
+				} else {
+					document.documentElement.classList.remove('light-mode');
+				}
+			})();
+		</script>
 	</head>
-	<body class="bg-black text-gray-200 selection:bg-cyan-400 selection:text-black overflow-x-hidden min-h-screen transition-colors duration-500">
+	<body class="bg-main-bg text-secondary-text selection:bg-accent-cyan selection:text-black overflow-x-hidden min-h-screen transition-colors duration-300">
 		
-		<div class="fixed inset-0 z-0 pointer-events-none">
-			<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px]"></div>
-			<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-slate-800/30 blur-[120px]"></div>
+		<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+			<!-- Estrellas en modo oscuro -->
+			<div class="stars-small absolute inset-0"></div>
+			<div class="stars-medium absolute inset-0"></div>
+			<div class="stars-large absolute inset-0"></div>
+
+			<!-- Estrellas fugaces -->
+			<div class="shooting-stars-container">
+				<div class="shooting-star"></div>
+				<div class="shooting-star"></div>
+				<div class="shooting-star"></div>
+				<div class="shooting-star"></div>
+				<div class="shooting-star"></div>
+			</div>
+			
+			<!-- Nebulosas / Resplandores minimalistas en Indigo adaptativo -->
+			<div class="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-indigo-900/10 blur-[150px] dark:bg-indigo-900/10 light-mode:bg-indigo-200/15"></div>
+			<div class="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] rounded-full bg-indigo-950/15 blur-[150px] dark:bg-indigo-950/15 light-mode:bg-slate-200/15"></div>
 		</div>
 
 		<slot />
@@ -42,19 +68,9 @@ const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800
 <style is:global>
 	html {
 		font-size: 90%;
-		transition: filter 0.5s ease-in-out, background-color 0.5s ease-in-out;
-	}
-
-	html.light-mode {
-		filter: invert(1) hue-rotate(180deg);
-		background-color: #ffffff;
-	}
-	
-	html.light-mode img,
-	html.light-mode canvas,
-	html.light-mode video,
-	html.light-mode .preserve-color {
-		filter: invert(1) hue-rotate(180deg);
+		background-color: var(--bg-main);
+		color: var(--text-primary);
+		transition: background-color 0.3s ease, color 0.3s ease;
 	}
 
 	* {
@@ -69,39 +85,28 @@ const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800
 		animation: tabFadeIn 0.4s ease-out forwards;
 	}
 
-    /* === ESTRELLAS / DESTELLOS DEL NOMBRE === */
-	@keyframes sparkle-flash {
-		0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
-		50% { transform: scale(1) rotate(90deg); opacity: 1; }
-	}
-
-	.sparkle-container {
+	/* Navigation Link Underline Effect */
+	.nav-link {
 		position: relative;
-		display: inline-block;
 	}
-
-	.sparkle-container::before, .sparkle-container::after {
+	.nav-link::after {
 		content: '';
 		position: absolute;
-		background-color: #ffdd55;
-		clip-path: polygon(50% 0%, 61% 35%, 100% 50%, 61% 65%, 50% 100%, 39% 65%, 0% 50%, 39% 35%);
-		filter: drop-shadow(0 0 10px #ffdd55);
-		z-index: 0;
+		bottom: -4px;
+		left: 0;
+		width: 100%;
+		height: 2px;
+		background-color: var(--accent-cyan);
+		transform: scaleX(0);
+		transform-origin: right;
+		transition: transform 0.3s ease-in-out;
 	}
-
-	.sparkle-container::before {
-		top: -25px; left: -25px; width: 40px; height: 40px;
-		animation: sparkle-flash 4s ease-in-out infinite;
-	}
-
-	.sparkle-container::after {
-		bottom: 10px; right: -30px; width: 25px; height: 25px;
-		animation: sparkle-flash 4s ease-in-out infinite 2s;
+	.nav-link:hover::after {
+		transform: scaleX(1);
+		transform-origin: left;
 	}
 
 	.hero-title {
-		position: relative;
-		z-index: 1;
-		color: white;
+		color: var(--text-primary);
 	}
 </style>

@@ -13,9 +13,45 @@ import Contact from '../components/sections/Contact.jsx';
 
 	<main class="relative z-10">
 		<Hero client:load />
+		
+		<!-- Separador 1 -->
+		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+			</div>
+		</div>
+
 		<AboutTabs client:visible />
+
+		<!-- Separador 2 -->
+		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+			</div>
+		</div>
+
 		<Experience client:visible />
+
+		<!-- Separador 3 -->
+		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+			</div>
+		</div>
+
 		<Projects client:visible />
+
+		<!-- Separador 4 -->
+		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+			</div>
+		</div>
+
 		<Contact client:visible />
 	</main>
 

@@ -10,29 +10,29 @@ export default function MoreAboutMe() {
   const t = translations[currentLang].more;
 
   const icons = [
-    <Cpu className="w-6 h-6 text-cyan-400" />, 
-    <Film className="w-6 h-6 text-cyan-400" />, 
-    <BookOpen className="w-6 h-6 text-cyan-400" />
+    <Cpu className="w-6 h-6 text-accent-cyan" />, 
+    <Film className="w-6 h-6 text-accent-cyan" />, 
+    <BookOpen className="w-6 h-6 text-accent-cyan" />
   ];
 
   return (
-    <div className="bg-black min-h-screen text-gray-200 selection:bg-cyan-400 selection:text-black font-sans pb-20">
+    <div className="bg-transparent min-h-screen text-secondary-text selection:bg-accent-cyan selection:text-black font-sans pb-20">
       
       <div className="max-w-6xl mx-auto pt-32 px-6 md:px-12">
         
         {/* --- BOTÓN VOLVER --- */}
         <RevealSection>
-          <a href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-cyan-400 transition-colors mb-10 text-sm font-bold tracking-widest uppercase outline-none">
+          <a href="/" className="inline-flex items-center gap-2 text-muted-text hover:text-accent-cyan transition-colors mb-10 text-sm font-bold tracking-widest uppercase outline-none">
             <ArrowLeft className="w-4 h-4" /> {t.back}
           </a>
         </RevealSection>
 
         {/* --- CABECERA --- */}
         <RevealSection delay={100}>
-          <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight leading-tight mb-4 max-w-4xl">
+          <h1 className="text-4xl md:text-6xl font-bold text-primary-text tracking-tight leading-tight mb-4 max-w-4xl">
             Más allá de las pantallas y el código.
           </h1>
-          <p className="text-lg text-gray-400 font-light leading-relaxed max-w-3xl mb-16">
+          <p className="text-lg text-muted-text font-light leading-relaxed max-w-3xl mb-16">
             {t.desc}
           </p>
         </RevealSection>
@@ -41,14 +41,14 @@ export default function MoreAboutMe() {
         <RevealSection delay={200}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {t.hobbies.map((hobby, i) => (
-              <div key={i} className="flex flex-col group bg-[#0d1117]/60 border border-white/5 p-6 md:p-8 rounded-[2rem] hover:border-white/10 hover:bg-[#0d1117] transition-all duration-300">
-                <div className="mb-5 w-12 h-12 bg-black border border-white/10 rounded-2xl flex items-center justify-center transform group-hover:-translate-y-1 transition-transform duration-300 shadow-lg">
+              <div key={i} className="flex flex-col group bg-card-bg/60 border border-main-border/50 p-6 md:p-8 rounded-[2rem] hover:border-main-border hover:bg-card-bg transition-all duration-300">
+                <div className="mb-5 w-12 h-12 bg-main-bg border border-main-border rounded-2xl flex items-center justify-center transform group-hover:-translate-y-1 transition-transform duration-300 shadow-lg">
                   {icons[i]}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">
+                <h3 className="text-xl font-bold text-primary-text mb-3">
                   {hobby.title}
                 </h3>
-                <p className="text-[15px] text-gray-400 leading-relaxed font-light">
+                <p className="text-[15px] text-muted-text leading-relaxed font-light">
                   {hobby.desc}
                 </p>
               </div>
@@ -56,11 +56,11 @@ export default function MoreAboutMe() {
           </div>
         </RevealSection>
 
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-16"></div>
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-main-border to-transparent my-16"></div>
 
         {/* --- SECCIÓN 2: SPOTIFY (TARJETA PANORÁMICA ARREGLADA) --- */}
         <RevealSection delay={300}>
-          <div className="w-full bg-[#0d1117] border border-white/10 rounded-[2rem] p-6 md:p-10 relative overflow-hidden group hover:border-[#1DB954]/30 transition-all duration-500 shadow-xl mb-16">
+          <div className="w-full bg-card-bg border border-main-border rounded-[2rem] p-6 md:p-10 relative overflow-hidden group hover:border-[#1DB954]/30 transition-all duration-500 shadow-xl mb-16">
             
             <div className="absolute -top-32 -right-32 w-80 h-80 bg-[#1DB954]/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-[#1DB954]/20 transition-all duration-500"></div>
 
@@ -74,16 +74,16 @@ export default function MoreAboutMe() {
                   <div className="w-10 h-10 rounded-xl bg-[#1DB954]/10 border border-[#1DB954]/20 flex items-center justify-center">
                     <Music className="w-5 h-5 text-[#1DB954]" />
                   </div>
-                  <h2 className="text-3xl font-bold text-white tracking-tight">
+                  <h2 className="text-3xl font-bold text-primary-text tracking-tight">
                     {t.spotifyTitle}
                   </h2>
                 </div>
-                <p className="text-[15px] text-gray-400 font-light leading-relaxed max-w-md">
+                <p className="text-[15px] text-muted-text font-light leading-relaxed max-w-md">
                   {t.spotifyDesc}
                 </p>
               </div>
 
-              {/* Lado Derecho: Reproductor de Spotify con alto forzado y sin el fondo gris que sobraba */}
+              {/* Lado Derecho: Reproductor de Spotify */}
               <div className="w-full h-[352px] ">
                 <iframe 
                   style={{ borderRadius: '16px', backgroundColor: 'transparent' }} 
@@ -101,7 +101,7 @@ export default function MoreAboutMe() {
           </div>
         </RevealSection>
 
-        {/* --- SECCIÓN 3: LEAGUE OF LEGENDS --- */}
+        {/* --- SECCIÓN 3: LEAGUE OF LEGENDS (Tematizada en Oro/Oscuro siempre) --- */}
         <RevealSection delay={400}>
           <div className="w-full bg-gradient-to-br from-[#091428] to-[#0a0d14] border border-[#C89B3C]/30 rounded-[2rem] overflow-hidden relative group hover:border-[#C89B3C]/50 transition-all duration-500 shadow-xl flex flex-col lg:flex-row">
             
@@ -167,7 +167,7 @@ export default function MoreAboutMe() {
                   href={t.lolLink} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-white hover:bg-gray-200 text-black rounded-full font-bold text-sm transition-all hover:scale-105 outline-none"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-white hover:bg-gray-200 text-black rounded-full font-bold text-sm transition-all hover:scale-105 outline-none cursor-pointer"
                 >
                   {t.lolUgg} <ExternalLink className="w-4 h-4" />
                 </a>

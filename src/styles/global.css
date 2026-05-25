@@ -1,1 +1,222 @@
 @import "tailwindcss";
+
+@theme {
+  --color-main-bg: var(--bg-main);
+  --color-alt-bg: var(--bg-alt);
+  --color-card-bg: var(--bg-card);
+  --color-nav-bg: var(--bg-nav);
+  --color-input-bg: var(--bg-input);
+  --color-primary-text: var(--text-primary);
+  --color-secondary-text: var(--text-secondary);
+  --color-muted-text: var(--text-muted);
+  --color-main-border: var(--border-color);
+  --color-hover-border: var(--border-hover);
+  --color-accent-cyan: var(--accent-cyan);
+}
+
+:root {
+  /* Modo Oscuro — Cosmos Minimalista */
+  --bg-main: #030712;
+  --bg-alt: #0a1224;
+  --bg-card: #111827;
+  --bg-nav: rgba(3, 7, 18, 0.8);
+  --bg-input: rgba(17, 24, 39, 0.6);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: rgba(99, 102, 241, 0.08);
+  --border-hover: rgba(99, 102, 241, 0.2);
+  --accent-cyan: #818cf8;       /* Indigo suave */
+}
+
+:root.light-mode {
+  /* Modo Claro */
+  --bg-main: #f8fafc;
+  --bg-alt: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-nav: rgba(248, 250, 252, 0.85);
+  --bg-input: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: rgba(15, 23, 42, 0.06);
+  --border-hover: rgba(15, 23, 42, 0.14);
+  --accent-cyan: #4f46e5;       /* Indigo más profundo */
+}
+
+/* ═══════════════════════════════════════
+   ESTRELLAS CÓSMICAS (Puro CSS, 0 imágenes)
+   ═══════════════════════════════════════ */
+
+/* Capa 1: Estrellas diminutas */
+.stars-small {
+  width: 1px; height: 1px;
+  box-shadow:
+    24px 80px #e2e8f0, 130px 200px #e2e8f0, 280px 50px #e2e8f0,
+    450px 320px #e2e8f0, 600px 180px #e2e8f0, 750px 400px #e2e8f0,
+    900px 60px #e2e8f0, 1050px 350px #e2e8f0, 1200px 120px #e2e8f0,
+    1350px 280px #e2e8f0, 80px 500px #e2e8f0, 200px 620px #e2e8f0,
+    370px 750px #e2e8f0, 520px 580px #e2e8f0, 680px 700px #e2e8f0,
+    820px 850px #e2e8f0, 1000px 640px #e2e8f0, 1150px 800px #e2e8f0,
+    1300px 550px #e2e8f0, 1450px 900px #e2e8f0, 60px 1000px #e2e8f0,
+    250px 1100px #e2e8f0, 430px 960px #e2e8f0, 620px 1050px #e2e8f0,
+    800px 1200px #e2e8f0, 950px 1100px #e2e8f0, 1100px 1300px #e2e8f0,
+    1280px 1150px #e2e8f0, 1400px 1250px #e2e8f0, 150px 1350px #e2e8f0,
+    340px 1400px #e2e8f0, 540px 1500px #e2e8f0, 740px 1450px #e2e8f0,
+    900px 1550px #e2e8f0, 1060px 1600px #e2e8f0, 1220px 1500px #e2e8f0,
+    1380px 1650px #e2e8f0, 100px 1700px #e2e8f0, 300px 1800px #e2e8f0,
+    500px 1750px #e2e8f0, 700px 1850px #e2e8f0, 880px 1900px #e2e8f0,
+    1040px 1800px #e2e8f0, 1200px 1950px #e2e8f0, 1360px 1850px #e2e8f0;
+  animation: stars-drift 80s linear infinite;
+}
+.stars-small::after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  box-shadow: inherit;
+}
+
+/* Capa 2: Estrellas medianas */
+.stars-medium {
+  width: 2px; height: 2px;
+  box-shadow:
+    100px 150px #cbd5e1, 350px 80px #cbd5e1, 550px 300px #cbd5e1,
+    800px 220px #cbd5e1, 1050px 50px #cbd5e1, 1250px 380px #cbd5e1,
+    180px 480px #cbd5e1, 420px 600px #cbd5e1, 680px 530px #cbd5e1,
+    920px 700px #cbd5e1, 1100px 620px #cbd5e1, 1320px 750px #cbd5e1,
+    60px 900px #cbd5e1, 300px 1020px #cbd5e1, 520px 850px #cbd5e1,
+    780px 1100px #cbd5e1, 1000px 950px #cbd5e1, 1200px 1080px #cbd5e1,
+    1400px 900px #cbd5e1, 200px 1250px #cbd5e1, 450px 1350px #cbd5e1,
+    700px 1200px #cbd5e1, 950px 1400px #cbd5e1, 1150px 1300px #cbd5e1;
+  animation: stars-drift 120s linear infinite;
+}
+.stars-medium::after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  box-shadow: inherit;
+}
+
+/* Capa 3: Estrellas grandes y brillantes */
+.stars-large {
+  width: 2px; height: 2px; border-radius: 50%;
+  box-shadow:
+    250px 120px rgba(129, 140, 248, 0.7), 650px 350px rgba(129, 140, 248, 0.5),
+    1100px 180px rgba(129, 140, 248, 0.6), 400px 700px rgba(129, 140, 248, 0.4),
+    850px 550px rgba(129, 140, 248, 0.7), 1300px 650px rgba(129, 140, 248, 0.5),
+    150px 1050px rgba(129, 140, 248, 0.6), 600px 1200px rgba(129, 140, 248, 0.4),
+    1000px 1100px rgba(129, 140, 248, 0.7), 1350px 1350px rgba(129, 140, 248, 0.5);
+  animation: stars-drift 160s linear infinite, stars-twinkle 4s ease-in-out infinite alternate;
+}
+.stars-large::after {
+  content: " ";
+  position: absolute;
+  top: 2000px;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  box-shadow: inherit;
+}
+
+@keyframes stars-drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-2000px); }
+}
+
+@keyframes stars-twinkle {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* Estrellas visibles en modo claro — invertidas para ser oscuras sobre fondo claro */
+:root.light-mode .stars-small {
+  opacity: 0.55;
+  filter: invert(1) brightness(0.6);
+  transition: opacity 0.5s ease;
+}
+:root.light-mode .stars-medium {
+  opacity: 0.45;
+  filter: invert(1) brightness(0.55);
+  transition: opacity 0.5s ease;
+}
+:root.light-mode .stars-large {
+  opacity: 0.35;
+  filter: invert(1) brightness(0.5);
+  transition: opacity 0.5s ease;
+}
+:root.light-mode .shooting-stars-container {
+  opacity: 0.5;
+  transition: opacity 0.5s ease;
+}
+
+/* ═══════════════════════════════════════
+   ESTRELLAS FUGACES (Shooting Stars)
+   ═══════════════════════════════════════ */
+.shooting-stars-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.shooting-star {
+  position: absolute;
+  top: var(--star-top);
+  left: var(--star-left);
+  width: 80px; /* Longitud de la cola */
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, var(--accent-cyan) 30%, transparent 100%);
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px var(--accent-cyan));
+  transform: rotate(-45deg);
+  opacity: 0;
+  animation: meteor var(--star-duration) linear infinite;
+  animation-delay: var(--star-delay);
+}
+
+@keyframes meteor {
+  0% {
+    opacity: 0;
+    transform: rotate(-45deg) translateX(0);
+  }
+  6% {
+    opacity: 1;
+  }
+  16% {
+    opacity: 0;
+    transform: rotate(-45deg) translateX(-600px);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-45deg) translateX(-600px);
+  }
+}
+
+/* Diferentes posiciones, retrasos y velocidades para mayor realismo */
+.shooting-star:nth-child(1) { --star-top: 5%; --star-left: 80%; --star-duration: 7s; --star-delay: 0s; }
+.shooting-star:nth-child(2) { --star-top: 15%; --star-left: 95%; --star-duration: 9s; --star-delay: 2.5s; }
+.shooting-star:nth-child(3) { --star-top: 30%; --star-left: 75%; --star-duration: 8s; --star-delay: 4.8s; }
+.shooting-star:nth-child(4) { --star-top: -10%; --star-left: 60%; --star-duration: 6s; --star-delay: 1.2s; }
+.shooting-star:nth-child(5) { --star-top: 50%; --star-left: 90%; --star-duration: 10s; --star-delay: 3.5s; }
+
+/* ═══════════════════════════════════════
+   View Transitions API (Circular Reveal)
+   ═══════════════════════════════════════ */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}

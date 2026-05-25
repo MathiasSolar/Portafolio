@@ -77,7 +77,9 @@ export const translations = {
       lolRankWorld: "Rank 13 Mundial", // Añadido marcador de posición basado en tu información
       lolUser: "Solar#Azir",
       lolPrevSeasonsTitle: "Temporadas Anteriores Master",
-      lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2" // Actualizado según tu información
+      lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2", // Actualizado según tu información
+      lolLink: "https://u.gg/lol/profile/las/solar-azir/overview",
+      lolUgg: "Ver perfil en U.GG"
     }
   },
   EN: {
@@ -151,7 +153,9 @@ export const translations = {
       lolRankWorld: "Rank 13 World", // Añadido marcador de posición basado en tu información
       lolUser: "Solar#Azir",
       lolPrevSeasonsTitle: "Previous Master Seasons",
-      lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2" // Corregido en EN también
+      lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2", // Corregido en EN también
+      lolLink: "https://u.gg/lol/profile/las/solar-azir/overview",
+      lolUgg: "View profile on U.GG"
     }
   }
 };
