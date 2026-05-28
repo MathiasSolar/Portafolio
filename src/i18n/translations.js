@@ -52,9 +52,31 @@ export const translations = {
     projects: {
       title: "Proyectos Destacados.", showMore: "Ver todos los proyectos", hide: "Ocultar proyectos",
       items: [
-        { title: "NeoRoute", cat: "Solución Empresarial", desc: "Sistema TMS diseñado para la optimización logística de vanguardia.", techs: ['React', 'Django', 'Firebase'] },
-        { title: "Portal Web GORE Aysén", cat: "Sector Público", desc: "Creación, administración y optimización del sitio web del GORE.", techs: ['WordPress', 'Linux Server', 'UI/UX'] },
-        { title: "Proyecto Futuro", cat: "Desarrollo Personal", desc: "Espacio preparado para tus futuros proyectos.", techs: ['React', 'Tailwind'] }
+        { 
+          title: "NeoRoute", 
+          cat: "Solución Empresarial", 
+          desc: "Sistema TMS diseñado para la optimización logística de vanguardia.", 
+          extendedDesc: "NeoRoute es una plataforma integral de gestión de transporte (TMS) que automatiza y optimiza la logística corporativa. Permite trazabilidad en tiempo real, cálculo de rutas eficientes y reportes analíticos avanzados, reduciendo los costos operativos significativamente.",
+          techs: ['React', 'Django', 'Firebase', 'PostgreSQL', 'Google Maps API'],
+          link: "#",
+          github: "#"
+        },
+        { 
+          title: "Portal Web GORE Aysén", 
+          cat: "Sector Público", 
+          desc: "Creación, administración y optimización del sitio web del GORE.", 
+          extendedDesc: "Rediseño y modernización completa del portal web del Gobierno Regional de Aysén. Se implementaron prácticas de accesibilidad, optimización SEO y un CMS a medida para permitir a los funcionarios actualizar contenido de manera ágil y segura.",
+          techs: ['WordPress', 'Linux Server', 'UI/UX', 'PHP', 'MySQL'],
+          link: "https://goreaysen.cl"
+        },
+        { 
+          title: "Proyecto Futuro", 
+          cat: "Desarrollo Personal", 
+          desc: "Espacio preparado para tus futuros proyectos.", 
+          extendedDesc: "Aplicación conceptual en desarrollo orientada a la gestión y automatización de tareas personales. Implementa las últimas características de React y una arquitectura sin servidor (serverless) para garantizar máxima escalabilidad.",
+          techs: ['React', 'Tailwind', 'Node.js', 'AWS'],
+          github: "#"
+        }
       ]
     },
     contact: { title: "Contacto.", subtitle: "Envíame un mensaje", desc: "Responderé a tu correo lo antes posible.", name: "Nombre", nameHolder: "Tu nombre", email: "Correo Electrónico", msg: "Mensaje", msgHolder: "Escribe tu mensaje...", bot: "No soy un robot", btn: "Enviar Mensaje", role: "Ingeniero en Informática", download: "Descargar CV" },
@@ -63,18 +85,18 @@ export const translations = {
       desc: "Más allá de las pantallas y el código, me apasiona el aprendizaje continuo y por disfrutar de los pequeños detalles. Te comparto un poco de mis intereses y lo que me inspira:", 
       back: "Volver al inicio", 
       hobbies: [ 
-        { title: "Innovación y Hardware", desc: "Entusiasta de probar nuevas tecnologías, optimizar setups y analizar las tendencias en hardware." }, 
-        { title: "Cine y Series", desc: "Disfruto del buen cine de ciencia ficción y tecnología, y de tramas psicológicas complejas que te hacen pensar." }, 
-        { title: "Lectura Tecnológica", desc: "Siempre buscando estar a la vanguardia leyendo sobre arquitectura de software y buenas prácticas." } 
+        { title: "Deportes y Adrenalina", desc: "Me encanta el fútbol, disfruto de la intensidad táctica de la UFC y soy un apasionado por la velocidad y estrategia de la Fórmula 1." }, 
+        { title: "Aprendizaje Constante", desc: "Considero que la tecnología avanza muy rápido. Me gusta estar constantemente estudiando, probando nuevas arquitecturas y ampliando mis conocimientos técnicos." }, 
+        { title: "Cine y Hardware", desc: "Disfruto del buen cine de ciencia ficción y tecnología, además de armar, optimizar y probar los últimos componentes de hardware." } 
       ],
       spotifyTitle: "Mi Playlist de Código",
       spotifyDesc: "La música es fundamental en mi día a día. Esta es la selección que uso para entrar en estado de 'flow' mental y máxima concentración mientras diseño arquitecturas o resuelvo algoritmos.",
       lolTitle: "En la Grieta del Invocador",
       // Actualizado con tus rangos basados en tu información
-      lolDesc: "Competitividad pura. Como Main Azir (Rank 1 LAS y Rank 13 Mundial), entiendo que para alcanzar el alto rendimiento se requiere de la misma microgestión, análisis de datos y paciencia que demanda diseñar una plataforma de software escalable. ¡El orden de Shurima!",
+      lolDesc: "Competitividad pura. Como Main Azir (llegando a ser Rank 1 LAS y Rank 13 del Mundo), entiendo que para alcanzar el alto rendimiento se requiere de la misma microgestión, análisis de datos y paciencia que demanda diseñar una plataforma de software escalable. ¡El orden de Shurima!",
       lolRank: "Master",
-      lolRankLAS: "Rank 1 LAS (Azir Main)", // Añadido marcador de posición basado en tu información
-      lolRankWorld: "Rank 13 Mundial", // Añadido marcador de posición basado en tu información
+      lolRankLAS: "Rank 1 LAS (Azir)",
+      lolRankWorld: "Rank 13 Mundial",
       lolUser: "Solar#Azir",
       lolPrevSeasonsTitle: "Temporadas Anteriores Master",
       lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2", // Actualizado según tu información
@@ -129,9 +151,31 @@ export const translations = {
     projects: {
       title: "Featured Projects.", showMore: "View all projects", hide: "Hide projects",
       items: [
-        { title: "NeoRoute", cat: "Business Solution", desc: "TMS System designed for cutting-edge logistics optimization.", techs: ['React', 'Django', 'Firebase'] },
-        { title: "GORE Aysén Web Portal", cat: "Public Sector", desc: "Creation, administration, and optimisation of the website.", techs: ['WordPress', 'Linux Server', 'UI/UX'] },
-        { title: "Future Project", cat: "Personal Development", desc: "Space prepared for future projects.", techs: ['React', 'Tailwind'] }
+        { 
+          title: "NeoRoute", 
+          cat: "Business Solution", 
+          desc: "TMS System designed for cutting-edge logistics optimization.",
+          extendedDesc: "NeoRoute is a comprehensive Transport Management System (TMS) that automates and optimizes corporate logistics. It enables real-time tracking, efficient route calculation, and advanced analytical reporting, significantly reducing operational costs.",
+          techs: ['React', 'Django', 'Firebase', 'PostgreSQL', 'Google Maps API'],
+          link: "#",
+          github: "#"
+        },
+        { 
+          title: "GORE Aysén Web Portal", 
+          cat: "Public Sector", 
+          desc: "Creation, administration, and optimisation of the website.",
+          extendedDesc: "Complete redesign and modernization of the Aysén Regional Government web portal. Accessibility practices, SEO optimization, and a custom CMS were implemented to allow staff to update content quickly and securely.",
+          techs: ['WordPress', 'Linux Server', 'UI/UX', 'PHP', 'MySQL'],
+          link: "https://goreaysen.cl"
+        },
+        { 
+          title: "Future Project", 
+          cat: "Personal Development", 
+          desc: "Space prepared for future projects.",
+          extendedDesc: "Conceptual application in development focused on task management and automation. It implements the latest React features and a serverless architecture to ensure maximum scalability.",
+          techs: ['React', 'Tailwind', 'Node.js', 'AWS'],
+          github: "#"
+        }
       ]
     },
     contact: { title: "Contact.", subtitle: "Send me a message", desc: "I'll reply to your email as soon as possible.", name: "Name", nameHolder: "Your name", email: "Email", msg: "Message", msgHolder: "Write your message...", bot: "I'm not a robot", btn: "Send Message", role: "Software Engineer", download: "Download CV" },
@@ -140,17 +184,17 @@ export const translations = {
       desc: "Beyond screens and code, I consider myself passionate about continuous learning and enjoying the small details. Here I share a bit of my daily life:", 
       back: "Back to home", 
       hobbies: [ 
-        { title: "Hardware & Tech", desc: "I am an enthusiast of testing new tech, building efficient setups, and keeping up with hardware trends." }, 
-        { title: "Movies & Series", desc: "I enjoy good cinema, especially sci-fi, tech, and complex psychological plots that make you think outside the box." }, 
-        { title: "Tech Reading", desc: "I always seek to stay one step ahead by reading articles on software architecture, AI, and best practices." } 
+        { title: "Sports & Adrenaline", desc: "I love football, I enjoy the tactical intensity of UFC, and I am passionate about the speed and strategy of Formula 1." }, 
+        { title: "Continuous Learning", desc: "Technology moves fast. I like to be constantly studying, trying new architectures, and expanding my technical knowledge." }, 
+        { title: "Cinema & Hardware", desc: "I enjoy good sci-fi cinema and assembling, optimizing, and benchmarking the latest hardware components." } 
       ],
       spotifyTitle: "Coding Playlist",
       spotifyDesc: "Music is fundamental in my daily routine. This is the selection I use to enter 'flow' state while developing.",
       lolTitle: "On the Summoner's Rift",
-      lolDesc: "Pure competitiveness. As an Azir Main (Rank 1 LAS & Rank 13 World), I know reaching Master requires the same macro-management, data analysis, and patience as developing a scalable software architecture. Shurima!",
+      lolDesc: "Pure competitiveness. As an Azir Main (reaching Rank 1 LAS & Rank 13 World), I know reaching Master requires the same macro-management, data analysis, and patience as developing a scalable software architecture. Shurima!",
       lolRank: "Master",
-      lolRankLAS: "Rank 1 LAS (Azir)", // Añadido marcador de posición basado en tu información
-      lolRankWorld: "Rank 13 World", // Añadido marcador de posición basado en tu información
+      lolRankLAS: "Rank 1 LAS (Azir)", 
+      lolRankWorld: "Rank 13 World",
       lolUser: "Solar#Azir",
       lolPrevSeasonsTitle: "Previous Master Seasons",
       lolPrevSeasonsList: "S2024 Split 1, S2024 Split 2", // Corregido en EN también

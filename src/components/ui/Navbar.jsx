@@ -29,51 +29,47 @@ export default function Navbar({ currentPage }) {
     }
   }, []);
 
-  const toggleTheme = (event) => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+  const toggleTheme = (e) => {
+    const isDark = theme === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
 
-    const updateDOM = () => {
-      setTheme(newTheme);
-      if (newTheme === 'light') {
+    const applyTheme = () => {
+      if (isDark) {
         document.documentElement.classList.add('light-mode');
-        localStorage.setItem('theme', 'light');
       } else {
         document.documentElement.classList.remove('light-mode');
-        localStorage.setItem('theme', 'dark');
       }
+      localStorage.setItem('theme', newTheme);
+      setTheme(newTheme);
     };
 
-    if (
-      !document.startViewTransition ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      updateDOM();
+    if (!document.startViewTransition) {
+      applyTheme();
       return;
     }
 
-    const x = event?.clientX ?? window.innerWidth / 2;
-    const y = event?.clientY ?? window.innerHeight / 2;
+    const x = e.clientX;
+    const y = e.clientY;
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
 
-    const transition = document.startViewTransition(() => {
-      updateDOM();
-    });
+    const transition = document.startViewTransition(applyTheme);
 
     transition.ready.then(() => {
+      // Always expand the NEW theme as a growing circle from the click point
       document.documentElement.animate(
         {
           clipPath: [
             `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-          ]
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
         },
         {
-          duration: 650,
-          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-          pseudoElement: '::view-transition-new(root)'
+          duration: 800,
+          easing: 'ease-in-out',
+          pseudoElement: '::view-transition-new(root)',
         }
       );
     });

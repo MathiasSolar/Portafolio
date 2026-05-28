@@ -208,15 +208,17 @@
 .shooting-star:nth-child(5) { --star-top: 50%; --star-left: 90%; --star-duration: 10s; --star-delay: 3.5s; }
 
 /* ═══════════════════════════════════════
-   View Transitions API (Circular Reveal)
+   VIEW TRANSITIONS API — Circular Wipe
    ═══════════════════════════════════════ */
-::view-transition-image-pair(root) {
-  isolation: auto;
-}
-
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
-  display: block;
+}
+/* New theme always renders on top so the circle reveal works in both directions */
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
 }

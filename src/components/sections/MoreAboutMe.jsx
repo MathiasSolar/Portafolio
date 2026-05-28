@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Cpu, Film, BookOpen, ExternalLink, MapPin, Globe, Trophy, History, Music } from 'lucide-react';
+import { ArrowLeft, Cpu, Film, BookOpen, ExternalLink, MapPin, Globe, Trophy, History, Music, User, Code, Heart, Map } from 'lucide-react';
 import RevealSection from '../ui/RevealSection.jsx';
 import { useStore } from '@nanostores/react';
 import { langStore } from '../../store/i18nStore';
@@ -18,7 +18,7 @@ export default function MoreAboutMe() {
   return (
     <div className="bg-transparent min-h-screen text-secondary-text selection:bg-accent-cyan selection:text-black font-sans pb-20">
       
-      <div className="max-w-6xl mx-auto pt-32 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto pt-32 px-6 md:px-12">
         
         {/* --- BOTÓN VOLVER --- */}
         <RevealSection>
@@ -29,12 +29,44 @@ export default function MoreAboutMe() {
 
         {/* --- CABECERA --- */}
         <RevealSection delay={100}>
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-text tracking-tight leading-tight mb-4 max-w-4xl">
-            Más allá de las pantallas y el código.
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-text tracking-tight leading-tight mb-6 max-w-5xl">
+            {t.title}
           </h1>
-          <p className="text-lg text-muted-text font-light leading-relaxed max-w-3xl mb-16">
+          <p className="text-lg md:text-xl text-muted-text font-light leading-relaxed max-w-4xl mb-16">
             {t.desc}
           </p>
+        </RevealSection>
+
+        {/* --- SECCIÓN 0: BIOGRAFÍA --- */}
+        <RevealSection delay={150}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="bg-card-bg/60 border border-main-border/50 p-8 rounded-[2rem] hover:border-main-border transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-accent-cyan/10 flex items-center justify-center">
+                  <User className="w-5 h-5 text-accent-cyan" />
+                </div>
+                <h3 className="text-2xl font-bold text-primary-text">¿Quién soy?</h3>
+              </div>
+              <p className="text-muted-text leading-relaxed font-light mb-6">
+                Soy un desarrollador que encuentra el equilibrio perfecto entre el diseño estético y la ingeniería de software profunda. Mi enfoque se centra en crear experiencias digitales que no solo funcionen a la perfección bajo el capó, sino que también cautiven al usuario desde el primer segundo.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-main-bg/50 border border-main-border rounded-full text-sm text-secondary-text font-medium">
+                <MapPin className="w-4 h-4 text-accent-cyan" /> Coyhaique, Chile
+              </div>
+            </div>
+
+            <div className="bg-card-bg/60 border border-main-border/50 p-8 rounded-[2rem] hover:border-main-border transition-all duration-300 flex flex-col justify-center">
+               <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                  <Code className="w-5 h-5 text-purple-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-primary-text">Estudio Constante</h3>
+              </div>
+              <p className="text-muted-text leading-relaxed font-light">
+                Considero que la tecnología avanza muy rápido. Dedico gran parte de mi tiempo libre a investigar nuevas arquitecturas, probar librerías modernas y perfeccionar mis habilidades analíticas. Nunca dejo de aprender.
+              </p>
+            </div>
+          </div>
         </RevealSection>
 
         {/* --- SECCIÓN 1: INTERESES --- */}
@@ -56,7 +88,7 @@ export default function MoreAboutMe() {
           </div>
         </RevealSection>
 
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-main-border to-transparent my-16"></div>
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-main-border to-transparent my-20"></div>
 
         {/* --- SECCIÓN 2: SPOTIFY (TARJETA PANORÁMICA ARREGLADA) --- */}
         <RevealSection delay={300}>
@@ -100,6 +132,8 @@ export default function MoreAboutMe() {
             </div>
           </div>
         </RevealSection>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-main-border to-transparent my-20"></div>
 
         {/* --- SECCIÓN 3: LEAGUE OF LEGENDS (Tematizada en Oro/Oscuro siempre) --- */}
         <RevealSection delay={400}>
