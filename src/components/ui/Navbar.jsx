@@ -48,31 +48,14 @@ export default function Navbar({ currentPage }) {
       return;
     }
 
+    // Guardamos la ubicación exacta del clic en el DOM como variables de CSS
     const x = e.clientX;
     const y = e.clientY;
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
+    document.documentElement.style.setProperty('--click-x', `${x}px`);
+    document.documentElement.style.setProperty('--click-y', `${y}px`);
 
-    const transition = document.startViewTransition(applyTheme);
-
-    transition.ready.then(() => {
-      // Always expand the NEW theme as a growing circle from the click point
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 800,
-          easing: 'ease-in-out',
-          pseudoElement: '::view-transition-new(root)',
-        }
-      );
-    });
+    // El navegador ejecuta la transición fluida acelerada por GPU
+    document.startViewTransition(applyTheme);
   };
 
   useEffect(() => {

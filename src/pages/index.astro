@@ -9,53 +9,49 @@ import Contact from '../components/sections/Contact.jsx';
 ---
 
 <Layout title="M. SOLAR | Portafolio">
-	<Navbar client:load currentPage="home" />
+    <Navbar client:load currentPage="home" />
 
-	<main class="relative z-10">
-		<Hero client:load />
-		
-		<!-- Separador 1 -->
-		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
-			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
-			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
-				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
-			</div>
-		</div>
+    <main class="relative z-10">
+        <Hero client:idle />
+        
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
 
-		<AboutTabs client:visible />
+        <AboutTabs client:visible />
 
-		<!-- Separador 2 -->
-		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
-			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
-			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
-				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
-			</div>
-		</div>
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
 
-		<Experience client:visible />
+        <Experience client:visible />
 
-		<!-- Separador 3 -->
-		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
-			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
-			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
-				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
-			</div>
-		</div>
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
 
-		<Projects client:visible />
+        <Projects client:visible />
 
-		<!-- Separador 4 -->
-		<div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
-			<div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
-			<div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
-				<div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
-			</div>
-		</div>
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
 
-		<Contact client:visible />
-	</main>
+        <Contact client:visible />
+    </main>
 
-	<footer class="py-8 bg-black text-center text-gray-600 text-sm border-t border-white/10 relative z-10">
-		<p class="font-bold">© {new Date().getFullYear()} Mathias Solar.</p>
-	</footer>
+    <footer class="py-8 bg-black text-center text-gray-600 text-sm border-t border-white/10 relative z-10">
+        <p class="font-bold">© {new Date().getFullYear()} Mathias Solar.</p>
+    </footer>
 </Layout>

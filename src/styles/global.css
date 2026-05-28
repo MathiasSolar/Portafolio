@@ -26,7 +26,7 @@
   --text-muted: #64748b;
   --border-color: rgba(99, 102, 241, 0.08);
   --border-hover: rgba(99, 102, 241, 0.2);
-  --accent-cyan: #818cf8;       /* Indigo suave */
+  --accent-cyan: #818cf8;      /* Indigo suave */
 }
 
 :root.light-mode {
@@ -41,7 +41,7 @@
   --text-muted: #64748b;
   --border-color: rgba(15, 23, 42, 0.06);
   --border-hover: rgba(15, 23, 42, 0.14);
-  --accent-cyan: #4f46e5;       /* Indigo más profundo */
+  --accent-cyan: #4f46e5;      /* Indigo más profundo */
 }
 
 /* ═══════════════════════════════════════
@@ -210,15 +210,51 @@
 /* ═══════════════════════════════════════
    VIEW TRANSITIONS API — Circular Wipe
    ═══════════════════════════════════════ */
-::view-transition-old(root),
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
 ::view-transition-new(root) {
+  z-index: 2;
+  mix-blend-mode: normal;
+  /* Duración de 0.8s para dar un efecto dramático y fluido */
+  animation: expand-theme 0.8s ease-in-out both; 
+}
+
+@keyframes expand-theme {
+  from {
+    /* Usa las coordenadas guardadas en JS o el centro por defecto si fallan */
+    clip-path: circle(0px at var(--click-x, 50%) var(--click-y, 50%));
+  }
+  to {
+    /* 150% se asegura de cubrir toda la pantalla sea cual sea su tamaño */
+    clip-path: circle(150% at var(--click-x, 50%) var(--click-y, 50%));
+  }
+}
+
+/* ═══════════════════════════════════════
+   AISLAMIENTO DEL MAPA (EarthCanvas)
+   ═══════════════════════════════════════ */
+.earth-isolate {
+  /* Esto saca completamente al mapa del árbol de animación global 'root' */
+  view-transition-name: map-canvas;
+}
+
+/* Evitamos que el navegador haga capturas o animaciones pesadas sobre el canvas */
+::view-transition-group(map-canvas),
+::view-transition-old(map-canvas),
+::view-transition-new(map-canvas) {
   animation: none;
   mix-blend-mode: normal;
 }
-/* New theme always renders on top so the circle reveal works in both directions */
-::view-transition-old(root) {
-  z-index: 1;
-}
-::view-transition-new(root) {
-  z-index: 2;
+
+/* Forzamos a que las variables del mapa conserven el estilo oscuro de manera estática, 
+   evitando parpadeos gráficos de D3 o WebGL al mutar clases en el HTML */
+:root.light-mode .earth-isolate {
+  --bg-main: #030712;
+  --text-primary: #e2e8f0;
+  --border-color: rgba(99, 102, 241, 0.08);
+  --accent-cyan: #818cf8;
 }

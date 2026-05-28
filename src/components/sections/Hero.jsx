@@ -17,7 +17,10 @@ export default function Hero() {
 
   return (
     <section id="hero" className="min-h-screen flex flex-col justify-center relative w-full overflow-hidden">
-      <EarthCanvas client:load />
+      {/* Contenedor optimizado que aísla por completo el mapa del re-renderizado global */}
+      <div className="absolute inset-0 w-full h-full earth-isolate pointer-events-auto">
+        <EarthCanvas client:only="react" />
+      </div>
       
       <div className="max-w-6xl mx-auto px-6 relative z-10 w-full pt-20">
         <div className="max-w-4xl relative z-10">
