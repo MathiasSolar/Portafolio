@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { ArrowLeft, Cpu, Film, BookOpen, ExternalLink, MapPin, Globe, Trophy, History, Music, User, Code, ChevronLeft, ChevronRight, GitBranch, Monitor } from 'lucide-react';
 import RevealSection from '../ui/RevealSection.jsx';
 import { useStore } from '@nanostores/react';
@@ -7,7 +7,7 @@ import { langStore } from '../../store/i18nStore';
 import { translations } from '../../i18n/translations';
 
 /* ════════════════════════════════════════════════
-   COMPONENTE: SPOTLIGHT CARD (Efecto Linterna)
+  COMPONENTE: SPOTLIGHT CARD (Efecto Linterna)
    ════════════════════════════════════════════════ */
 function SpotlightCard({ children, className = "", spotlightColor = "rgba(129, 140, 248, 0.15)" }) {
   const mouseX = useMotionValue(0);
@@ -42,54 +42,7 @@ function SpotlightCard({ children, className = "", spotlightColor = "rgba(129, 1
 }
 
 /* ════════════════════════════════════════════════
-   COMPONENTE: TILT CARD 3D
-   ════════════════════════════════════════════════ */
-function TiltCard({ children, className = "" }) {
-  const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
-
-  const handleMouseMove = (e) => {
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    x.set(mouseX / width - 0.5);
-    y.set(mouseY / height - 0.5);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateY, rotateX, transformStyle: "preserve-3d" }}
-      className={`relative w-full rounded-[2rem] ${className}`}
-    >
-      <div
-        style={{ transform: "translateZ(40px)", transformStyle: "preserve-3d" }}
-        className="w-full h-full"
-      >
-        {children}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ════════════════════════════════════════════════
-   PÁGINA PRINCIPAL
+  PÁGINA PRINCIPAL
    ════════════════════════════════════════════════ */
 export default function MoreAboutMe() {
   const currentLang = useStore(langStore);
@@ -98,101 +51,250 @@ export default function MoreAboutMe() {
   // Estado del Slider Cilíndrico
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // 4 Tarjetas para hacer que el efecto cilíndrico luzca genial
+  // 4 Tarjetas estabilizadas y ordenadas
   const slidesData = [
     {
-      id: "spotify",
-      content: (
-        <div className="w-full h-full bg-card-bg border border-[#1DB954]/30 rounded-[2rem] p-6 md:p-10 relative overflow-hidden shadow-[0_30px_60px_rgba(29,185,84,0.15)] flex flex-col md:flex-row items-center gap-8">
-          <div className="absolute -top-32 -left-32 w-80 h-80 bg-[#1DB954]/20 blur-[80px] rounded-full pointer-events-none" />
-          <div className="w-full md:w-1/2 relative z-10 flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-[#1DB954]/10 border border-[#1DB954]/30 flex items-center justify-center animate-pulse shrink-0">
-                <Music className="w-6 h-6 text-[#1DB954]" />
-              </div>
-              <div>
-                <span className="text-[#1DB954] font-bold text-xs uppercase tracking-widest block">01 / Focus</span>
-                <h3 className="text-2xl lg:text-3xl font-bold text-primary-text">{t.spotifyTitle}</h3>
-              </div>
-            </div>
-            <p className="text-muted-text font-light leading-relaxed">{t.spotifyDesc}</p>
+  id: "spotify",
+  content: (
+    <div className="w-full h-full bg-card-bg border border-main-border rounded-[2rem] p-8 md:p-12 relative overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row items-center justify-between gap-10">
+      
+      {/* Glow de fondo */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#1DB954]/10 blur-[120px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3" />
+
+      {/* Texto */}
+      <div className="w-full lg:w-1/2 relative z-10 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+        
+        <div className="flex items-center gap-4 mb-6">
+          
+          <div className="w-14 h-14 rounded-xl bg-[#1DB954]/10 border border-[#1DB954]/30 flex items-center justify-center shrink-0">
+            <Music className="w-7 h-7 text-[#1DB954]" />
           </div>
-          <div className="w-full md:w-1/2 h-[352px] rounded-2xl overflow-hidden shadow-2xl border border-white/5 relative z-10">
-            <iframe style={{ backgroundColor: 'transparent' }} src="https://open.spotify.com/embed/playlist/3O8x5wBocu3LOfSiQnUQC7?theme=0" width="100%" height="100%" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+          <div className="text-left">
+            <span className="text-[#1DB954] font-bold text-xs uppercase tracking-widest block mb-1">
+              01 / Focus
+            </span>
+
+            <h3 className="text-3xl lg:text-4xl font-bold text-primary-text">
+              {t.spotifyTitle}
+            </h3>
           </div>
+
         </div>
-      )
-    },
-    {
-      id: "lol",
-      content: (
-        <div className="w-full h-full bg-[#091428] border border-[#C89B3C]/40 rounded-[2rem] overflow-hidden relative shadow-[0_40px_80px_rgba(0,0,0,0.7)]">
-          <div className="absolute inset-0 bg-[url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg')] bg-cover bg-[center_top_-20%] opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#091428] via-[#091428]/90 to-transparent" />
-          <div className="relative z-10 w-full h-full p-8 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-6">
-              <div className="relative group cursor-pointer">
-                <div className="w-20 h-20 rounded-full bg-black border-2 border-[#C89B3C] shadow-[0_0_30px_rgba(200,155,60,0.5)] flex items-center justify-center transition-transform group-hover:scale-110 shrink-0">
-                  <img src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/master.png" alt="Master" className="w-12 h-12 drop-shadow-lg"/>
-                </div>
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-black border border-[#C89B3C] text-[#C89B3C] text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
-                  {t.lolRankLAS}
-                </div>
-              </div>
-              <div>
-                <span className="text-[#C89B3C] font-bold text-xs uppercase tracking-widest block mb-1">02 / Competitividad</span>
-                <h3 className="text-3xl lg:text-4xl font-black text-white tracking-tighter drop-shadow-lg">{t.lolUser}</h3>
-                <p className="text-base text-[#C89B3C] font-bold flex items-center gap-2 mt-1"><Trophy className="w-4 h-4" /> {t.lolTitle}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap md:flex-nowrap items-center gap-4 w-full md:w-auto">
-              <div className="flex-1 md:flex-none px-6 py-3 bg-black/60 border border-white/10 rounded-2xl backdrop-blur-md">
-                <span className="block text-[10px] text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2"><Globe className="w-3 h-3"/> Global</span>
-                <span className="text-lg font-bold text-white">{t.lolRankWorld}</span>
-              </div>
-              <div className="flex-1 md:flex-none px-6 py-3 bg-black/60 border border-white/10 rounded-2xl backdrop-blur-md">
-                <span className="block text-[10px] text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2"><History className="w-3 h-3"/> Histórico</span>
-                <span className="text-lg font-bold text-white">{t.lolPrevSeasonsList}</span>
-              </div>
-              <motion.a href={t.lolLink} target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full md:w-auto mt-4 md:mt-0 flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#C89B3C] to-[#A07A2B] text-black rounded-2xl font-black text-sm uppercase tracking-widest shadow-[0_0_20px_rgba(200,155,60,0.4)] outline-none">
-                {t.lolUgg} <ExternalLink className="w-4 h-4" />
-              </motion.a>
-            </div>
-          </div>
+
+        <p className="text-muted-text font-light leading-relaxed text-lg max-w-md">
+          {t.spotifyDesc}
+        </p>
+
+      </div>
+
+      {/* Spotify */}
+      <div className="w-full lg:w-1/2 relative z-10 flex items-center justify-center lg:justify-end">
+        
+        <div className="w-full max-w-[420px] h-[352px] md:h-[400px] rounded-2xl overflow-hidden border border-[#282828] shadow-2xl bg-black">
+          
+          <iframe
+            className="w-full h-full"
+            src="https://open.spotify.com/embed/playlist/3O8x5wBocu3LOfSiQnUQC7?theme=0"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          />
+
         </div>
-      )
-    },
+
+      </div>
+
+    </div>
+  )
+},
+{
+  id: "lol",
+  content: (
+    <div className="w-full h-full bg-[#091428] border border-[#C89B3C]/30 rounded-[2rem] relative overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.7)]">
+      
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[url('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg')] bg-cover bg-center opacity-15" />
+        
+        <div className="absolute inset-0 bg-gradient-to-r from-[#091428] via-[#091428]/85 to-[#091428]/70" />
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-[#091428] via-transparent to-[#091428]/30" />
+      </div>
+
+      {/* Glow */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C89B3C]/10 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* Content */}
+      <div className="relative z-10 w-full h-full px-10 md:px-14 py-16 flex flex-col lg:flex-row items-center justify-between gap-10">
+
+        {/* LEFT */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
+
+          {/* Badge */}
+          <div className="inline-flex items-center px-4 py-2 rounded-full border border-[#C89B3C] bg-black/30 backdrop-blur-md mb-8">
+            <span className="text-[#C89B3C] text-xs font-bold tracking-[0.2em] uppercase">
+              02 / Competitividad
+            </span>
+          </div>
+
+          {/* User */}
+          <h3 className="text-3xl lg:text-4xl font-black text-white tracking-tight leading-none mb-6 drop-shadow-xl">
+            {t.lolUser}
+          </h3>
+
+          {/* Subtitle */}
+          <div className="flex items-center gap-3 text-[#C89B3C] mb-8">
+            <Trophy className="w-6 h-6" />
+
+            <span className="text-xl font-bold">
+              {t.lolTitle}
+            </span>
+          </div>
+
+          {/* Description */}
+          <p className="text-gray-400 text-lg leading-relaxed max-w-xl font-light">
+            Competitivo por naturaleza. Cada partida es una oportunidad para aprender, mejorar y superar mis propios límites.
+          </p>
+
+        </div>
+
+        {/* RIGHT */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center pt-6">
+
+          {/* Rank */}
+          <div className="relative mb-10">
+
+            <div className="w-32 h-32 rounded-full bg-black border-4 border-[#C89B3C] flex items-center justify-center shadow-[0_0_50px_rgba(200,155,60,0.35)]">
+              
+              <img
+                src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/master.png"
+                alt="Master"
+                className="w-16 h-16 object-contain"
+              />
+
+            </div>
+
+            {/* Label */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full bg-[#091428] border border-[#C89B3C]">
+              
+              <span className="text-[#C89B3C] font-black text-xl whitespace-nowrap">
+                Master I
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* Region */}
+          <span className="text-gray-400 tracking-[0.4em] uppercase text-base mb-6">
+            LAS
+          </span>
+
+          {/* Rank LAS */}
+          <div className="flex items-center gap-4 mb-8">
+
+            <div className="w-10 h-[1px] bg-[#C89B3C]/30" />
+
+            <span className="text-[#C89B3C] uppercase tracking-[0.25em] text-base font-semibold">
+              Rank <span className="text-2xl font-black">1</span> de LAS
+            </span>
+
+            <div className="w-10 h-[1px] bg-[#C89B3C]/30" />
+
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-5 w-full max-w-xl mb-8">
+
+            {/* Global */}
+            <div className="bg-black/50 border border-white/10 rounded-[2rem] p-6 backdrop-blur-md text-center">
+
+              <Globe className="w-7 h-7 text-[#C89B3C] mx-auto mb-4" />
+
+              <span className="block text-gray-400 uppercase tracking-[0.3em] text-xs mb-3">
+                Rank Global
+              </span>
+
+              <span className="block text-5xl font-black text-white leading-none mb-2">
+                #13
+              </span>
+
+              <span className="block text-white font-bold text-2xl">
+                Mundial
+              </span>
+
+            </div>
+
+            {/* Histórico */}
+            <div className="bg-black/50 border border-white/10 rounded-[2rem] p-6 backdrop-blur-md text-center">
+
+              <History className="w-7 h-7 text-[#C89B3C] mx-auto mb-4" />
+
+              <span className="block text-gray-400 uppercase tracking-[0.3em] text-xs mb-4">
+                Histórico
+              </span>
+
+              <div className="flex flex-col gap-3">
+
+                <span className="text-white font-bold text-2xl">
+                  S24 Master
+                </span>
+
+                <span className="text-white font-bold text-2xl">
+                  S25 Master
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Button */}
+          <motion.a
+            href={t.lolLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full max-w-lg flex items-center justify-center gap-3 px-8 py-3 mb-4 bg-gradient-to-r from-[#D4A63A] to-[#C89B3C] text-black rounded-[1.5rem] font-black text-base uppercase tracking-[0.15em] shadow-[0_0_30px_rgba(200,155,60,0.35)]"
+          >
+            Ver Perfil en U.GG
+
+            <ExternalLink className="w-5 h-5" />
+          </motion.a>
+
+        </div>
+
+      </div>
+
+    </div>
+  )
+},
     {
       id: "github",
       content: (
-        <div className="w-full h-full bg-[#0d1117] border border-[#30363d] rounded-[2rem] p-8 md:p-10 flex flex-col justify-between relative overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+        <div className="w-full h-full bg-[#0d1117] border border-[#30363d] rounded-[2rem] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#238636]/10 blur-[100px] rounded-full pointer-events-none" />
-          <div className="relative z-10 flex flex-col h-full justify-between">
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-full bg-[#238636]/20 border border-[#238636]/50 flex items-center justify-center shrink-0">
-                  <GitBranch className="w-7 h-7 text-[#238636]" />
-                </div>
-                <div>
-                  <span className="text-[#238636] font-bold text-xs uppercase tracking-widest block mb-1">03 / Comunidad</span>
-                  <h3 className="text-3xl lg:text-4xl font-bold text-white tracking-tight">Open Source</h3>
-                </div>
+          <div className="relative z-10 flex flex-col h-full justify-center">
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="w-16 h-16 rounded-full bg-[#238636]/20 border border-[#238636]/50 flex items-center justify-center mb-6">
+                <GitBranch className="w-8 h-8 text-[#238636]" />
               </div>
-              <p className="text-gray-400 font-light leading-relaxed max-w-xl text-lg">
+              <span className="text-[#238636] font-bold text-xs uppercase tracking-widest block mb-2">03 / Comunidad</span>
+              <h3 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-6">Open Source</h3>
+              <p className="text-gray-400 font-light leading-relaxed max-w-2xl text-lg mx-auto">
                 Contribuyo activamente a la comunidad publicando librerías, compartiendo configuraciones y experimentando con arquitecturas de software modernas de alto rendimiento.
               </p>
             </div>
-            <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-6 mt-8 shadow-inner">
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <div className="flex justify-between text-xs text-gray-500 mb-2 font-mono">
-                    <span>Actividad Anual</span>
-                    <span className="text-[#238636]">+450 Commits</span>
-                  </div>
-                  <div className="h-3 w-full bg-[#30363d] rounded-full overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: "75%" }} transition={{ duration: 1.5, delay: 0.5 }} className="h-full bg-gradient-to-r from-[#238636] to-[#39d353]" />
-                  </div>
-                </div>
+            <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-6 md:p-8 mt-4 shadow-inner max-w-xl mx-auto w-full">
+              <div className="flex justify-between text-sm text-gray-500 mb-3 font-mono">
+                <span>Actividad Anual</span>
+                <span className="text-[#238636]">+450 Commits</span>
+              </div>
+              <div className="h-4 w-full bg-[#30363d] rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: "75%" }} transition={{ duration: 1.5, delay: 0.5 }} className="h-full bg-gradient-to-r from-[#238636] to-[#39d353]" />
               </div>
             </div>
           </div>
@@ -202,36 +304,34 @@ export default function MoreAboutMe() {
     {
       id: "setup",
       content: (
-        <div className="w-full h-full bg-gradient-to-br from-[#111827] to-[#030712] border border-gray-800 rounded-[2rem] p-8 md:p-10 flex flex-col justify-between shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
-          <div className="relative z-10">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-gray-800/80 border border-gray-700 flex items-center justify-center shrink-0">
-                <Monitor className="w-7 h-7 text-gray-300" />
+        <div className="w-full h-full bg-gradient-to-br from-[#111827] to-[#030712] border border-gray-800 rounded-[2rem] p-8 md:p-12 flex flex-col justify-center shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+            <div className="w-full lg:w-5/12 flex flex-col justify-center items-center lg:items-start text-center lg:text-left">
+              <div className="w-16 h-16 rounded-2xl bg-gray-800/80 border border-gray-700 flex items-center justify-center mb-6">
+                <Monitor className="w-8 h-8 text-gray-300" />
               </div>
-              <div>
-                <span className="text-gray-400 font-bold text-xs uppercase tracking-widest block mb-1">04 / Workflow</span>
-                <h3 className="text-3xl lg:text-4xl font-bold text-white tracking-tight">Mi Workspace</h3>
-              </div>
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-widest block mb-2">04 / Workflow</span>
+              <h3 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-6">Mi Workspace</h3>
+              <p className="text-gray-400 font-light leading-relaxed text-lg">
+                Un entorno rigurosamente diseñado para máxima productividad, cero distracciones y un confort ergonómico que me permite codificar durante horas.
+              </p>
             </div>
-            <p className="text-gray-400 font-light leading-relaxed max-w-xl text-lg mb-8">
-              Un entorno rigurosamente diseñado para máxima productividad, cero distracciones y un confort ergonómico que me permite codificar durante horas.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-5 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
-                <span className="text-white font-bold block mb-1">Estación Principal</span>
-                <span className="text-sm text-gray-400 font-light">MacBook Pro M2 • 32GB RAM</span>
+            <div className="w-full lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+              <div className="p-6 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
+                <span className="text-white font-bold text-lg block mb-1">Estación Principal</span>
+                <span className="text-gray-400 font-light">MacBook Pro M2 • 32GB RAM</span>
               </div>
-              <div className="p-5 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
-                <span className="text-white font-bold block mb-1">Visualización</span>
-                <span className="text-sm text-gray-400 font-light">Monitor Dual 27" 4K IPS</span>
+              <div className="p-6 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
+                <span className="text-white font-bold text-lg block mb-1">Visualización</span>
+                <span className="text-gray-400 font-light">Monitor Dual 27" 4K IPS</span>
               </div>
-              <div className="p-5 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
-                <span className="text-white font-bold block mb-1">Periféricos</span>
-                <span className="text-sm text-gray-400 font-light">MX Master 3S + Keychron Q1</span>
+              <div className="p-6 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
+                <span className="text-white font-bold text-lg block mb-1">Periféricos</span>
+                <span className="text-gray-400 font-light">MX Master 3S + Keychron Q1</span>
               </div>
-              <div className="p-5 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
-                <span className="text-white font-bold block mb-1">Audio</span>
-                <span className="text-sm text-gray-400 font-light">Sony WH-1000XM5 (ANC)</span>
+              <div className="p-6 bg-gray-900/50 rounded-2xl border border-gray-800 backdrop-blur-md">
+                <span className="text-white font-bold text-lg block mb-1">Audio</span>
+                <span className="text-gray-400 font-light">Sony WH-1000XM5 (ANC)</span>
               </div>
             </div>
           </div>
@@ -244,9 +344,26 @@ export default function MoreAboutMe() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % totalSlides);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
 
-  // Parámetros matemáticos del Cilindro 3D
-  const cylinderRadius = 750; // Profundidad 
-  const cylinderAngle = 45; // Separación en grados
+  // Función matemática robusta para Cover Flow Seguro (Evita que se tapen)
+  const getCoverFlowStyles = (index, current) => {
+    let diff = index - current;
+    if (diff > totalSlides / 2) diff -= totalSlides;
+    if (diff < -totalSlides / 2) diff += totalSlides;
+
+    if (diff === 0) {
+      // Activa: Al frente y centrada
+      return { x: "0%", z: 0, rotateY: 0, scale: 1, opacity: 1, zIndex: 30 };
+    } else if (diff === 1) {
+      // Siguiente: A la derecha, atrás y girada
+      return { x: "25%", z: -100, rotateY: -15, scale: 0.85, opacity: 0.3, zIndex: 20 };
+    } else if (diff === -1) {
+      // Anterior: A la izquierda, atrás y girada
+      return { x: "-25%", z: -100, rotateY: 15, scale: 0.85, opacity: 0.3, zIndex: 20 };
+    } else {
+      // Ocultas en el fondo
+      return { x: "0%", z: -200, rotateY: 0, scale: 0.5, opacity: 0, zIndex: 10 };
+    }
+  };
 
   const icons = [
     <Cpu className="w-6 h-6 text-accent-cyan" />, 
@@ -273,7 +390,6 @@ export default function MoreAboutMe() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         
-        {/* --- CABECERA --- */}
         <RevealSection>
           <motion.a 
             href="/" 
@@ -360,7 +476,7 @@ export default function MoreAboutMe() {
         </motion.div>
 
         {/* ════════════════════════════════════════════════
-            2. SLIDER CILÍNDRICO 3D (COVER FLOW REAL)
+            2. SLIDER "COVER FLOW" SEGURO (Sin colisiones)
             ════════════════════════════════════════════════ */}
         <RevealSection delay={300} className="mt-32">
           
@@ -370,10 +486,8 @@ export default function MoreAboutMe() {
             </h2>
           </div>
 
-          {/* CONTENEDOR PRINCIPAL CON BOTONES LATERALES */}
           <div className="relative w-full flex items-center justify-center">
             
-            {/* Botón Izquierdo (Flotando sobre el carrusel) */}
             <button 
               onClick={prevSlide}
               className="absolute left-0 md:-left-6 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-main-bg/80 border border-main-border shadow-[0_10px_30px_rgba(0,0,0,0.5)] text-primary-text hover:bg-main-border/80 hover:scale-110 transition-all backdrop-blur-xl outline-none cursor-pointer"
@@ -381,55 +495,34 @@ export default function MoreAboutMe() {
               <ChevronLeft className="w-6 h-6" />
             </button>
 
-            {/* Cámara 3D (Perspective) */}
-            <div className="relative w-full h-[650px] md:h-[500px] perspective-[1500px] flex items-center justify-center overflow-visible px-10">
+            {/* Contenedor Perspectiva 3D */}
+            <div className="relative w-full h-[650px] md:h-[550px] perspective-[1500px] flex items-center justify-center overflow-visible px-4 md:px-10">
               
-              <motion.div 
-                className="absolute w-full h-full flex items-center justify-center"
-                style={{ transformStyle: "preserve-3d" }}
-                animate={{ 
-                  rotateY: currentSlide * -cylinderAngle,
-                  z: -cylinderRadius 
-                }}
-                transition={{ type: "spring", stiffness: 120, damping: 25 }}
-              >
+              <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
                 
                 {slidesData.map((slide, index) => {
-                  // Calcular la distancia más corta para saber cuál está al frente
-                  let diff = index - currentSlide;
-                  if (diff > totalSlides / 2) diff -= totalSlides;
-                  if (diff < -totalSlides / 2) diff += totalSlides;
+                  const isActive = index === currentSlide;
                   
-                  const isActive = diff === 0;
-
                   return (
                     <motion.div
                       key={slide.id}
-                      className="absolute w-full max-w-4xl h-full flex items-center justify-center"
-                      style={{
-                        transform: `rotateY(${index * cylinderAngle}deg) translateZ(${cylinderRadius}px)`,
-                        transformStyle: "preserve-3d"
-                      }}
-                      animate={{
-                        opacity: isActive ? 1 : 0.25,
-                        filter: isActive ? "blur(0px)" : "blur(12px)",
-                      }}
-                      transition={{ duration: 0.5 }}
+                      className="absolute w-full max-w-5xl h-full flex items-center justify-center"
+                      initial={false}
+                      animate={getCoverFlowStyles(index, currentSlide)}
+                      transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                      style={{ transformStyle: "preserve-3d" }}
                       onClick={() => { if (!isActive) setCurrentSlide(index); }}
                     >
                       <div className={`w-full h-full transition-all duration-300 ${isActive ? 'pointer-events-auto cursor-default' : 'pointer-events-none cursor-pointer'}`}>
-                        <TiltCard className="h-full">
-                          {slide.content}
-                        </TiltCard>
+                        {slide.content}
                       </div>
                     </motion.div>
                   );
                 })}
                 
-              </motion.div>
+              </div>
             </div>
 
-            {/* Botón Derecho (Flotando sobre el carrusel) */}
             <button 
               onClick={nextSlide}
               className="absolute right-0 md:-right-6 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-main-bg/80 border border-main-border shadow-[0_10px_30px_rgba(0,0,0,0.5)] text-primary-text hover:bg-main-border/80 hover:scale-110 transition-all backdrop-blur-xl outline-none cursor-pointer"
