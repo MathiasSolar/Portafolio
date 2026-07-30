@@ -1,53 +1,332 @@
 ---
+import '@fontsource/newsreader/400.css';
+import '@fontsource/newsreader/400-italic.css';
+import '@fontsource/newsreader/600.css';
+import '@fontsource/geist-sans/400.css';
+import '@fontsource/geist-sans/500.css';
+import '@fontsource/geist-mono/400.css';
 import '../styles/global.css';
+import { getHtmlLang, getSupportedLocale } from '../i18n/utils';
+import { translations } from '../i18n/translations';
 
 interface Props {
 	title: string;
 	description?: string;
+	lang?: string;
+	locale?: string;
+	canonicalPath?: string;
+	ogType?: string;
+	ogImage?: string;
+	ogImageAlt?: string;
+	noindex?: boolean;
+	jsonLd?: Record<string, any>;
 }
 
-const { title, description = "Portafolio de Mathias Solar - Ingeniero en Informática" } = Astro.props;
+const { 
+	title, 
+	description = "Ingeniero en Informática enfocado en desarrollo de software, plataformas digitales, infraestructura y transformación digital desde la Región de Aysén.",
+	lang,
+	locale,
+	canonicalPath,
+	ogType = "website",
+	ogImage,
+	ogImageAlt = "Portafolio profesional de Mathias Solar",
+	noindex = false,
+	jsonLd
+} = Astro.props;
 
-const fontBase = ["htt", "ps://", "fonts.google", "apis.com"].join("");
-const fontStatic = ["htt", "ps://", "fonts.gsta", "tic.com"].join("");
-const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap";
+const currentLocale = getSupportedLocale(locale || lang || Astro.params.lang || 'es');
+const htmlLang = getHtmlLang(currentLocale);
+const tSkipLink = ((translations as any)[currentLocale] || translations.es).skipLink;
+
+const OG_LOCALES = {
+  es: "es_CL",
+  en: "en_US",
+  fr: "fr_FR",
+  pt: "pt_PT",
+  "zh-CN": "zh_CN"
+};
+const ogLocaleValue = OG_LOCALES[currentLocale] || "es_CL";
+
+// Calculo seguro de URL Base (bloqueando strictly localhost)
+const envSiteUrl = import.meta.env.PUBLIC_SITE_URL || (Astro.site ? Astro.site.origin : "");
+const siteUrl = (envSiteUrl && !envSiteUrl.includes('localhost')) ? envSiteUrl.replace(/\/$/, "") : "";
+
+const currentPath = canonicalPath || Astro.url.pathname;
+const cleanPath = currentPath.startsWith('/') ? currentPath : `/${currentPath}`;
+const canonicalUrl = siteUrl ? `${siteUrl}${cleanPath}` : null;
+const ogUrl = canonicalUrl;
+
+// Calculo seguro de URL absoluta para og:image
+let finalOgImage: string | null = null;
+if (ogImage) {
+	if (ogImage.startsWith('http://') || ogImage.startsWith('https://')) {
+		finalOgImage = ogImage;
+	} else if (siteUrl) {
+		const cleanImgPath = ogImage.startsWith('/') ? ogImage : `/${ogImage}`;
+		finalOgImage = `${siteUrl}${cleanImgPath}`;
+	}
+}
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang={htmlLang} class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#0b0f17" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		
-		<link rel="preconnect" href={fontBase}>
-		<link rel="preconnect" href={fontStatic} crossorigin>
-		<link href={fontUrl} rel="stylesheet">
+		<meta name="description" content={description} />
+
+		{noindex ? (
+			<meta name="robots" content="noindex, nofollow" />
+		) : (
+			<meta name="robots" content="index, follow, max-image-preview:large" />
+		)}
+
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+		{/* Favicon & Icons */}
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+
+		{/* Open Graph */}
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="Mathias Solar — Portafolio" />
+		<meta property="og:locale" content={ogLocaleValue} />
+		{ogUrl && <meta property="og:url" content={ogUrl} />}
+		{finalOgImage && (
+			<>
+				<meta property="og:image" content={finalOgImage} />
+				<meta property="og:image:alt" content={ogImageAlt} />
+			</>
+		)}
+
+		{/* Twitter / X Card */}
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{finalOgImage && (
+			<>
+				<meta name="twitter:image" content={finalOgImage} />
+				<meta name="twitter:image:alt" content={ogImageAlt} />
+			</>
+		)}
+
+		{/* Datos Estructurados JSON-LD */}
+		{jsonLd && (
+			<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+		)}
 
 		<script is:inline>
 			(function() {
-				const theme = localStorage.getItem('theme') || 'dark';
-				if (theme === 'light') {
-					document.documentElement.classList.add('light-mode');
-				} else {
-					document.documentElement.classList.remove('light-mode');
+				// 1. Aplicacion Tema
+				function applyTheme(theme) {
+					const root = document.documentElement;
+					if (theme === 'light') {
+						root.classList.add('light-mode');
+						root.classList.remove('dark');
+					} else {
+						root.classList.add('dark');
+						root.classList.remove('light-mode');
+					}
+					root.style.colorScheme = theme;
 				}
+
+				let theme = 'light';
+				try {
+					const savedTheme = localStorage.getItem('theme');
+					if (savedTheme === 'light' || savedTheme === 'dark') {
+						theme = savedTheme;
+					} else {
+						theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					}
+				} catch (e) {
+					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+				applyTheme(theme);
+
+				// 2. Restauración de scroll tras cambio de idioma (normalización de rutas y límites por sección)
+				function normalizePathname(input) {
+					try {
+						var raw = typeof input === 'string' ? input : (input && input.pathname ? input.pathname : String(input || '/'));
+						var path = raw.split(/[?#]/)[0];
+						path = path.replace(/\/index\.html$/, '');
+						path = path.replace(/\/{2,}/g, '/');
+						path = path.replace(/\/+$/, '');
+						return path || '/';
+					} catch (e) {
+						return '/';
+					}
+				}
+
+				try {
+					var rawScroll = sessionStorage.getItem('portfolio-language-scroll');
+					if (rawScroll && typeof history !== 'undefined' && 'scrollRestoration' in history) {
+						history.scrollRestoration = 'manual';
+					}
+
+					if (rawScroll) {
+						var data = JSON.parse(rawScroll);
+						var targetPathNorm = data.targetPath || data.targetPathNormalized || normalizePathname(data.targetPathRaw || '');
+						var currentPathNorm = normalizePathname(window.location.pathname);
+						var pathsMatch = targetPathNorm === currentPathNorm;
+						var isNotExpired = data.timestamp && (Date.now() - data.timestamp < 10000);
+						var isLangNav = data.isLanguageNav === true || data.targetPathNormalized !== undefined;
+						var debugMode = window.location.search.indexOf('debug_scroll=true') !== -1;
+
+						if (!pathsMatch || !isNotExpired || !isLangNav) {
+							if (debugMode) {
+								console.log('Language scroll RESTORE DISCARDED:', {
+									currentRawPathname: window.location.pathname,
+									currentNormalizedPathname: currentPathNorm,
+									targetRaw: data.targetPathRaw || data.targetPath,
+									targetNormalized: targetPathNorm,
+									pathsMatch: pathsMatch,
+									isNotExpired: isNotExpired,
+									sessionDataDiscarded: true,
+									statusReason: !pathsMatch ? 'PATH_MISMATCH' : 'EXPIRED_DATA'
+								});
+							}
+							sessionStorage.removeItem('portfolio-language-scroll');
+							if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+								history.scrollRestoration = 'auto';
+							}
+						} else {
+							// Datos válidos y rutas coincidentes -> Eliminar sessionStorage una vez validado
+							sessionStorage.removeItem('portfolio-language-scroll');
+
+							var userHasScrolled = false;
+							function markUserInteraction() {
+								userHasScrolled = true;
+							}
+							['wheel', 'touchstart', 'pointerdown'].forEach(function(evt) {
+								window.addEventListener(evt, markUserInteraction, { passive: true, once: true });
+							});
+							window.addEventListener('keydown', function(e) {
+								if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].indexOf(e.key) !== -1) {
+									userHasScrolled = true;
+								}
+							}, { passive: true, once: true });
+
+							function restoreScroll() {
+								if (userHasScrolled) {
+									if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+										history.scrollRestoration = 'auto';
+									}
+									return;
+								}
+
+								var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+								var finalTargetY = 0;
+
+								if (data.pageType === 'home') {
+									if (data.sectionKey === 'hero') {
+										finalTargetY = 0;
+									} else if (data.sectionKey === 'footer') {
+										var footer = document.querySelector('footer');
+										if (footer) {
+											finalTargetY = footer.getBoundingClientRect().top + window.scrollY;
+										} else {
+											finalTargetY = maxScroll;
+										}
+									} else if (data.sectionKey) {
+										var matches = document.querySelectorAll('[data-scroll-key="' + data.sectionKey + '"]');
+										if (matches.length === 1) {
+											var destSection = matches[0];
+											var sectionTop = destSection.getBoundingClientRect().top + window.scrollY;
+											var header = document.querySelector('header');
+											var navbarHeight = header ? header.getBoundingClientRect().height : 0;
+											finalTargetY = Math.max(0, sectionTop - navbarHeight - 16);
+										} else {
+											finalTargetY = 0;
+											if (debugMode) {
+												console.log('Language scroll Error: Expected exactly 1 match for key ' + data.sectionKey + ', found ' + matches.length);
+											}
+										}
+									}
+								} else {
+									finalTargetY = 0;
+								}
+
+								if (debugMode) {
+									console.log('Language scroll RESTORE TABLE:', {
+										sectionKey: data.sectionKey,
+										finalTargetY: finalTargetY,
+										maxScroll: maxScroll
+									});
+								}
+
+								var rootElement = document.documentElement;
+								var previousInlineScrollBehavior = rootElement.style.scrollBehavior;
+
+								rootElement.style.scrollBehavior = 'auto';
+
+								window.scrollTo(
+									0,
+									Math.min(finalTargetY, maxScroll)
+								);
+
+								requestAnimationFrame(function() {
+									rootElement.style.scrollBehavior = previousInlineScrollBehavior;
+								});
+							}
+
+							var runRestoration = function() {
+								requestAnimationFrame(function() {
+									requestAnimationFrame(function() {
+										restoreScroll();
+									});
+								});
+							};
+
+							var checkFontsAndRun = function() {
+								if (document.fonts && document.fonts.ready) {
+									document.fonts.ready.then(runRestoration).catch(runRestoration);
+								} else {
+									runRestoration();
+								}
+							};
+
+							var onWindowLoad = function() {
+								checkFontsAndRun();
+							};
+
+							if (document.readyState === 'complete') {
+								onWindowLoad();
+							} else {
+								window.addEventListener('load', onWindowLoad);
+							}
+							
+							window.addEventListener('pagehide', function() {
+								try {
+									if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+										history.scrollRestoration = 'auto';
+									}
+								} catch (e) {}
+							}, { once: true });
+						}
+					}
+				} catch (e) {}
 			})();
 		</script>
 	</head>
-	<body class="bg-main-bg text-secondary-text selection:bg-accent-cyan selection:text-black overflow-x-hidden min-h-screen transition-colors duration-1000">
+	<body class="bg-main-bg text-secondary-text selection:bg-accent-main selection:text-base-bg overflow-x-hidden min-h-screen transition-colors duration-[220ms] ease-out motion-reduce:transition-none">
+		<a href="#main-content" class="skip-link">{tSkipLink}</a>
 		
 		<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-			<!-- Estrellas en modo oscuro -->
+			<!-- Retícula técnica retirada -->
+
+			<!-- Estrellas (Atenuadas vía global.css) -->
 			<div class="stars-small absolute inset-0"></div>
 			<div class="stars-medium absolute inset-0"></div>
 			<div class="stars-large absolute inset-0"></div>
 
 			<!-- Estrellas fugaces -->
-			<div class="shooting-stars-container">
+			<div class="shooting-stars-container motion-reduce:hidden">
 				<div class="shooting-star"></div>
 				<div class="shooting-star"></div>
 				<div class="shooting-star"></div>
@@ -55,9 +334,9 @@ const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800
 				<div class="shooting-star"></div>
 			</div>
 			
-			<!-- Nebulosas / Resplandores minimalistas en Indigo adaptativo -->
-			<div class="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-indigo-900/10 blur-[150px] dark:bg-indigo-900/10 light-mode:bg-indigo-200/15"></div>
-			<div class="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] rounded-full bg-indigo-950/15 blur-[150px] dark:bg-indigo-950/15 light-mode:bg-slate-200/15"></div>
+			<!-- Nebulosas / Resplandores neutralizados -->
+			<div class="absolute top-[-10%] left-[-10%] w-[45%] h-[45%] rounded-full bg-accent-soft opacity-20 blur-[120px]"></div>
+			<div class="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] rounded-full bg-accent-soft opacity-15 blur-[120px]"></div>
 		</div>
 
 		<slot />
@@ -70,11 +349,11 @@ const fontUrl = fontBase + "/css2?family=Montserrat:wght@300;400;500;600;700;800
 		font-size: 90%;
 		background-color: var(--bg-main);
 		color: var(--text-primary);
-		transition: background-color 1s ease, color 1s ease;
+		transition: background-color var(--theme-transition-duration) var(--theme-transition-easing), color var(--theme-transition-duration) var(--theme-transition-easing);
 	}
 
 	* {
-		font-family: 'Montserrat', sans-serif;
+		font-family: 'Geist Sans', 'Montserrat', sans-serif;
 	}
 	
 	@keyframes tabFadeIn {

@@ -1,0 +1,677 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../ui/Navbar.jsx';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import Footer from '../ui/Footer.astro';
+import { localizedUrl, getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+import { TECHNOLOGIES, type TechnologyKey } from "../../data/technologies";
+import { 
+  Code2, 
+  Braces,
+  LayoutTemplate, 
+  Server, 
+  Database, 
+  RefreshCw, 
+  ArrowRight,
+  Palette,
+  Users,
+  BarChart2,
+  GitBranch,
+  Package,
+  PenTool,
+  Globe,
+  Briefcase,
+  Layers,
+  Video,
+  BarChart3,
+  Search,
+  Activity,
+  GitFork,
+  Paintbrush,
+  type LucideIcon
+} from 'lucide-react';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+const currentLocale = getSupportedLocale(lang || Astro.params.lang || 'es');
+const tCapabilitiesPage = ((translations as any)[currentLocale] || translations.es).capabilitiesPage;
+
+type CapabilityTechnology = {
+  name: string;
+  catalogKey?: TechnologyKey;
+  key?: string;
+  level?: number;
+};
+
+type CapabilityGroup = {
+  num: string;
+  id: string;
+  icon: LucideIcon;
+  technologies?: CapabilityTechnology[];
+};
+
+const BASE_CAPABILITIES: readonly CapabilityGroup[] = [
+  {
+    num: "01",
+    id: "desarrollo-frontend",
+    icon: Code2,
+    technologies: [
+      { name: "JavaScript", catalogKey: "javascript" },
+      { name: "TypeScript", catalogKey: "typescript" },
+      { name: "React", key: "React", catalogKey: "react" },
+      { name: "Astro", key: "Astro", catalogKey: "astro" },
+      { name: "HTML", catalogKey: "html" },
+      { name: "CSS", catalogKey: "css" },
+      { name: "Tailwind CSS", catalogKey: "tailwindcss" }
+    ]
+  },
+  {
+    num: "02",
+    id: "backend-apis",
+    icon: Braces,
+    technologies: [
+      { name: "Node.js", catalogKey: "nodejs" },
+      { name: "Python", catalogKey: "python" },
+      { name: "Django", catalogKey: "django" },
+      { name: "PHP", catalogKey: "php" },
+      { name: "Laravel", catalogKey: "laravel" }
+    ]
+  },
+  {
+    num: "03",
+    id: "plataformas-institucionales",
+    icon: LayoutTemplate,
+    technologies: [
+      { name: "WordPress", key: "WordPress", catalogKey: "wordpress" },
+      { name: "Kadence" },
+      { name: "TablePress" },
+      { name: "Google Analytics 4", catalogKey: "google-analytics" },
+      { name: "Search Console" },
+      { name: "Rank Math" },
+      { name: "WP Mail SMTP" },
+      { name: "UpdraftPlus" }
+    ]
+  },
+  {
+    num: "04",
+    id: "infraestructura-despliegue",
+    icon: Server,
+    technologies: [
+      { name: "Docker", catalogKey: "docker" },
+      { name: "Linux", catalogKey: "linux" },
+      { name: "Ubuntu", catalogKey: "ubuntu" },
+      { name: "Webmin" },
+      { name: "Windows Server" },
+      { name: "Git", catalogKey: "git" },
+      { name: "GitHub", catalogKey: "github" },
+      { name: "Vercel", catalogKey: "vercel" },
+      { name: "Netlify", catalogKey: "netlify" }
+    ]
+  },
+  {
+    num: "05",
+    id: "datos-bases-de-datos",
+    icon: Database,
+    technologies: [
+      { name: "SQL" },
+      { name: "PostgreSQL", key: "PostgreSQL", catalogKey: "postgresql" },
+      { name: "MySQL", catalogKey: "mysql" },
+      { name: "Data Lake", key: "Data Lake" }
+    ]
+  },
+  {
+    num: "06",
+    id: "transformacion-digital",
+    icon: RefreshCw
+  }
+];
+
+const capabilitiesData = BASE_CAPABILITIES.map((base, idx) => {
+  const transItem = (tCapabilitiesPage.items || [])[idx] || {};
+  const levelMap = transItem.levelMap || {};
+
+  const techWithLevels = base.technologies ? base.technologies.map((tech) => ({
+    ...tech,
+    level: tech.key ? levelMap[tech.key] : undefined
+  })) : undefined;
+
+  return {
+    ...base,
+    title: transItem.title || "",
+    description: transItem.description || "",
+    technologies: techWithLevels,
+    concepts: transItem.concepts
+  };
+});
+
+const tTools = tCapabilitiesPage.toolsSection || {
+  badge: "HERRAMIENTAS DE TRABAJO",
+  toolsIndexLabel: "Herramientas de trabajo",
+  devTitle: "DESARROLLO",
+  designTitle: "DISEÑO Y CONTENIDO",
+  mgmtTitle: "GESTIÓN Y COLABORACIÓN",
+  analyticsTitle: "ANALÍTICA Y MONITOREO",
+  availabilityMonitoring: "Monitoreo de disponibilidad"
+};
+
+const tWorkspace = tCapabilitiesPage.workspace || {
+  badge: "MI ENTORNO DE DESARROLLO",
+  title: "Mi entorno de desarrollo",
+  lead: "Configuración, temas de color y extensiones que optimizan mi flujo de trabajo diario en VS Code.",
+  colorThemeBadge: "Tema de color",
+  iconThemeBadge: "Tema de iconos",
+  formatterBadge: "Formato automático",
+  errorLensBadge: "Errores en línea",
+  indentBadge: "Lectura estructural",
+  pokemonSecondaryBadge: "Personalización secundaria",
+  pokemonDesc: "Detalle personal en la barra de estado del editor."
+};
+---
+
+<Layout 
+    title={tCapabilitiesPage.metaTitle || "Capacidades y herramientas | Mathias Solar"}
+    description={tCapabilitiesPage.metaDesc || "Desarrollo web y backend, plataformas institucionales, infraestructura, bases de datos, transformación digital y entorno de trabajo técnico."}
+    lang={currentLocale}
+>
+    <Navbar client:load currentPage="about" currentLocale={currentLocale} />
+
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none pt-28 pb-20 md:pt-32 md:pb-24">
+        <Breadcrumbs lang={currentLocale} items={[{ label: 'Inicio', href: '/' }, { label: tCapabilitiesPage.title || 'Capacidades y herramientas' }]} />
+
+        <div class="max-w-7xl mx-auto px-6 flex flex-col gap-14 md:gap-20">
+            
+            {/* ENCABEZADO DE PÁGINA */}
+            <div class="flex flex-col gap-3 text-center md:text-left">
+                <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                    {tCapabilitiesPage.badge || "PERFIL TÉCNICO"}
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-text tracking-tight leading-tight">
+                    {tCapabilitiesPage.title || "Capacidades & Herramientas"}
+                </h1>
+                <p class="text-lg md:text-xl text-secondary-text max-w-3xl leading-relaxed mt-1">
+                    {tCapabilitiesPage.lead}
+                </p>
+            </div>
+
+            {/* SECCIÓN 1: CAPACIDADES PROFESIONALES */}
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start relative">
+                <div class="hidden lg:flex flex-col w-1/4 shrink-0 sticky top-28 gap-2 border-l border-main-border/15 pl-4 py-1">
+                    <span class="text-[11px] font-mono uppercase tracking-widest text-muted-text font-bold mb-2">
+                        {tCapabilitiesPage.indexLabel || "Índice de áreas"}
+                    </span>
+                    {capabilitiesData.map((cap) => (
+                        <a 
+                            href={`#${cap.id}`}
+                            class="text-sm text-secondary-text hover:text-primary-text transition-colors py-1 flex items-center gap-2 font-medium group"
+                        >
+                            <span class="text-xs font-mono text-accent-cyan">{cap.num}</span>
+                            <span class="truncate group-hover:text-accent-cyan transition-colors">{cap.title}</span>
+                        </a>
+                    ))}
+                    <a 
+                        href="#herramientas-de-trabajo"
+                        class="text-sm text-secondary-text hover:text-primary-text transition-colors py-1 flex items-center gap-2 font-medium group pt-2 border-t border-main-border/10 mt-1"
+                    >
+                        <span class="text-xs font-mono text-accent-cyan">07</span>
+                        <span class="truncate group-hover:text-accent-cyan transition-colors">{tTools.toolsIndexLabel || "Herramientas de trabajo"}</span>
+                    </a>
+                    <a 
+                        href="#entorno-de-trabajo"
+                        class="text-sm text-secondary-text hover:text-primary-text transition-colors py-1 flex items-center gap-2 font-medium group"
+                    >
+                        <span class="text-xs font-mono text-accent-cyan">08</span>
+                        <span class="truncate group-hover:text-accent-cyan transition-colors">{tWorkspace.title || "Mi entorno de desarrollo"}</span>
+                    </a>
+                </div>
+
+                <div class="w-full lg:w-3/4 flex flex-col gap-8 md:gap-10">
+                    {capabilitiesData.map((cap) => (
+                        <div id={cap.id} class="flex flex-col gap-5 p-6 md:p-8 rounded-xl bg-surface-soft/30 border border-main-border/10 hover:bg-surface-soft/50 transition-colors">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-accent-cyan/10 border border-accent-cyan/20 flex items-center justify-center shrink-0 text-accent-cyan" aria-hidden="true">
+                                        <cap.icon className="w-5 h-5" />
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-mono font-bold text-accent-cyan tracking-wider">
+                                        {cap.num}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-2xl md:text-3xl font-bold text-primary-text leading-snug">
+                                    {cap.title}
+                                </h2>
+                                <p class="text-base text-secondary-text leading-relaxed">
+                                    {cap.description}
+                                </p>
+                            </div>
+
+                            {cap.technologies && (
+                                <div class="flex flex-col gap-2.5 pt-2">
+                                    <span class="text-[11px] font-mono uppercase tracking-widest text-muted-text font-bold">
+                                        {tCapabilitiesPage.relatedTechLabel || "Tecnologías relacionadas"}
+                                    </span>
+                                    <div class="flex flex-wrap gap-2">
+                                        {cap.technologies.map((tech: CapabilityTechnology) => {
+                                            const catalogTech = tech.catalogKey ? TECHNOLOGIES[tech.catalogKey] : null;
+                                            return (
+                                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-md bg-main-border/5 border border-main-border/10 text-xs md:text-sm text-primary-text font-medium">
+                                                {catalogTech?.icon && (
+                                                    <img src={catalogTech.icon} alt="" class:list={["w-3.5 h-3.5 object-contain", catalogTech.darkClass]} aria-hidden="true" />
+                                                )}
+                                                <span>{tech.name}</span>
+                                                {tech.level && (
+                                                    <span class="text-[11px] font-mono text-accent-cyan bg-accent-cyan/10 px-1.5 py-0.2 rounded">
+                                                        {tech.level}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {cap.concepts && (
+                                <div class="flex flex-col gap-2.5 pt-2">
+                                    <span class="text-[11px] font-mono uppercase tracking-widest text-muted-text font-bold">
+                                        {tCapabilitiesPage.keyConceptsLabel || "Conceptos clave"}
+                                    </span>
+                                    <div class="flex flex-wrap gap-2">
+                                        {cap.concepts.map((concept: string) => (
+                                            <span class="px-3 py-1 rounded-md bg-main-border/5 border border-main-border/10 text-xs md:text-sm text-secondary-text font-medium">
+                                                {concept}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* SECCIÓN 2: HERRAMIENTAS DE TRABAJO (CON ICONOS EN CADA HERRAMIENTA INDIVIDUAL) */}
+            <div id="herramientas-de-trabajo" class="flex flex-col gap-6 pt-4 border-t border-main-border/15">
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                        {tTools.badge || "HERRAMIENTAS DE TRABAJO"}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    {/* BLOQUE 1: DESARROLLO */}
+                    <div class="p-4 sm:p-5 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <Code2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <h3 class="text-xs font-mono tracking-wider font-bold text-emerald-400 uppercase">
+                                {tTools.devTitle || "DESARROLLO"}
+                            </h3>
+                        </div>
+                        <ul class="flex flex-col gap-2.5 text-xs sm:text-sm text-primary-text font-medium pl-0.5">
+                            <li class="flex items-center gap-2.5"><Code2 className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> VS Code</li>
+                            <li class="flex items-center gap-2.5"><GitBranch className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Git</li>
+                            <li class="flex items-center gap-2.5"><GitFork className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> GitHub</li>
+                            <li class="flex items-center gap-2.5"><Package className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> npm</li>
+                        </ul>
+                    </div>
+
+                    {/* BLOQUE 2: DISEÑO Y CONTENIDO */}
+                    <div class="p-4 sm:p-5 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <Palette className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <h3 class="text-xs font-mono tracking-wider font-bold text-emerald-400 uppercase">
+                                {tTools.designTitle || "DISEÑO Y CONTENIDO"}
+                            </h3>
+                        </div>
+                        <ul class="flex flex-col gap-2.5 text-xs sm:text-sm text-primary-text font-medium pl-0.5">
+                            <li class="flex items-center gap-2.5"><Paintbrush className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Figma</li>
+                            <li class="flex items-center gap-2.5"><PenTool className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Photoshop</li>
+                            <li class="flex items-center gap-2.5"><Globe className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> WordPress</li>
+                        </ul>
+                    </div>
+
+                    {/* BLOQUE 3: GESTIÓN Y COLABORACIÓN */}
+                    <div class="p-4 sm:p-5 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <Users className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <h3 class="text-xs font-mono tracking-wider font-bold text-emerald-400 uppercase">
+                                {tTools.mgmtTitle || "GESTIÓN Y COLABORACIÓN"}
+                            </h3>
+                        </div>
+                        <ul class="flex flex-col gap-2.5 text-xs sm:text-sm text-primary-text font-medium pl-0.5">
+                            <li class="flex items-center gap-2.5"><Briefcase className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Google Workspace</li>
+                            <li class="flex items-center gap-2.5"><Layers className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Microsoft 365</li>
+                            <li class="flex items-center gap-2.5"><Video className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Zoom</li>
+                        </ul>
+                    </div>
+
+                    {/* BLOQUE 4: ANALÍTICA Y MONITOREO */}
+                    <div class="p-4 sm:p-5 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <BarChart2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <h3 class="text-xs font-mono tracking-wider font-bold text-emerald-400 uppercase">
+                                {tTools.analyticsTitle || "ANALÍTICA Y MONITOREO"}
+                            </h3>
+                        </div>
+                        <ul class="flex flex-col gap-2.5 text-xs sm:text-sm text-primary-text font-medium pl-0.5">
+                            <li class="flex items-center gap-2.5"><BarChart3 className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Google Analytics 4</li>
+                            <li class="flex items-center gap-2.5"><Search className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> Search Console</li>
+                            <li class="flex items-center gap-2.5"><Activity className="w-3.5 h-3.5 text-emerald-400/90 shrink-0" /> {tTools.availabilityMonitoring || "Monitoreo de disponibilidad"}</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* SECCIÓN 3: MI ENTORNO DE DESARROLLO (IMAGEN B CON ENCABEZADO "MI ENTORNO DE DESARROLLO") */}
+            <div id="entorno-de-trabajo" class="flex flex-col gap-6 md:gap-8 pt-4 border-t border-main-border/15">
+                
+                {/* ENCABEZADO HISTÓRICO CORREGIDO */}
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                        {tWorkspace.badge || "MI ENTORNO DE DESARROLLO"}
+                    </span>
+                    <p class="text-base text-secondary-text max-w-3xl leading-relaxed">
+                        {tWorkspace.lead || "Configuración, temas de color y extensiones que optimizan mi flujo de trabajo diario en VS Code."}
+                    </p>
+                </div>
+
+                {/* PRIMERA FILA: 3 TARJETAS GRANDES Y RECTANGULARES DE TEMAS */}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
+                    
+                    {/* TARJETA 1: NORD */}
+                    <div class="p-4 sm:p-5 lg:p-5.5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-xl min-w-0">
+                        <div>
+                            {/* PUNTOS A LA IZQUIERDA, BADGE A LA DERECHA */}
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#bf616a]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#ebcb8b]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#a3be8c]"></span>
+                                </div>
+                                <span class="text-[10.5px] sm:text-xs font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.colorThemeBadge || "Tema de color"}
+                                </span>
+                            </div>
+
+                            <h4 class="text-lg sm:text-xl font-bold text-primary-text mb-3">Nord</h4>
+
+                            {/* VENTANA DE CÓDIGO NORD COMPACTA */}
+                            <div class="rounded-xl border border-[#2e3440] bg-[#2e3440]/90 overflow-hidden font-mono text-xs text-[#e5e9f0] shadow-md">
+                                <div class="flex items-center justify-between px-3 py-2 bg-[#3b4252] border-b border-[#2e3440] text-[11px] text-[#d8dee9]">
+                                    <span class="flex items-center gap-2 text-[#88c0d0] font-semibold">
+                                        <span class="w-2 h-2 rounded-full bg-[#88c0d0]"></span> main.js
+                                    </span>
+                                    <span class="text-[10px] text-[#81a1c1]">UTF-8</span>
+                                </div>
+                                <div class="p-3 sm:p-3.5 leading-snug overflow-x-auto">
+                                    <p><span class="text-[#b48ead]">const</span> <span class="text-[#88c0d0]">region</span> = <span class="text-[#a3be8c]">&quot;Aysén&quot;</span>;</p>
+                                    <p class="mt-1"><span class="text-[#b48ead]">function</span> <span class="text-[#88c0d0]">optimizeRoutes</span>(<span class="text-[#d8dee9]">data</span>) &#123;</p>
+                                    <p class="pl-4"><span class="text-[#81a1c1]">return</span> <span class="text-[#d8dee9]">data</span>.<span class="text-[#88c0d0]">filter</span>(<span class="text-[#d8dee9]">i</span> =&gt; <span class="text-[#d8dee9]">i</span>.<span class="text-[#88c0d0]">active</span>);</p>
+                                    <p>&#125;</p>
+                                    <p class="mt-1"><span class="text-[#81a1c1]">export default</span> <span class="text-[#88c0d0]">optimizeRoutes</span>;</p>
+                                </div>
+                                <div class="px-3 py-1.5 bg-[#2e3440] border-t border-[#3b4252] flex items-center justify-between text-[10px] text-[#81a1c1]">
+                                    <span>JavaScript</span>
+                                    <span class="text-[#88c0d0] font-bold">Nord Arctic</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* TARJETA 2: ANDROMEDA */}
+                    <div class="p-4 sm:p-5 lg:p-5.5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-xl min-w-0">
+                        <div>
+                            {/* PUNTOS A LA IZQUIERDA, BADGE A LA DERECHA */}
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#ff5555]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#f1fa8c]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#50fa7b]"></span>
+                                </div>
+                                <span class="text-[10.5px] sm:text-xs font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.colorThemeBadge || "Tema de color"}
+                                </span>
+                            </div>
+
+                            <h4 class="text-lg sm:text-xl font-bold text-primary-text mb-3">Andromeda</h4>
+
+                            {/* VENTANA DE CÓDIGO ANDROMEDA COMPACTA */}
+                            <div class="rounded-xl border border-[#21252b] bg-[#262a33] overflow-hidden font-mono text-xs text-[#f8f8f2] shadow-md">
+                                <div class="flex items-center justify-between px-3 py-2 bg-[#1e2227] border-b border-[#21252b] text-[11px] text-[#abb2bf]">
+                                    <span class="flex items-center gap-2 text-[#ff79c6] font-semibold">
+                                        <span class="w-2 h-2 rounded-full bg-[#ff79c6]"></span> routes.js
+                                    </span>
+                                    <span class="text-[10px] text-[#8be9fd] font-bold">Andromeda Neon</span>
+                                </div>
+                                <div class="p-3 sm:p-3.5 leading-snug overflow-x-auto">
+                                    <p><span class="text-[#ff79c6]">const</span> <span class="text-[#8be9fd]">region</span> = <span class="text-[#50fa7b]">&quot;Aysén&quot;</span>;</p>
+                                    <p class="mt-1"><span class="text-[#ff79c6]">function</span> <span class="text-[#f1fa8c]">optimizeRoutes</span>(<span class="text-[#f8f8f2]">data</span>) &#123;</p>
+                                    <p class="pl-4"><span class="text-[#ff79c6]">return</span> <span class="text-[#f8f8f2]">data</span>.<span class="text-[#8be9fd]">filter</span>(<span class="text-[#f8f8f2]">i</span> =&gt; <span class="text-[#f8f8f2]">i</span>.<span class="text-[#50fa7b]">active</span>);</p>
+                                    <p>&#125;</p>
+                                    <p class="mt-1"><span class="text-[#ff79c6]">export default</span> <span class="text-[#f1fa8c]">optimizeRoutes</span>;</p>
+                                </div>
+                                <div class="px-3 py-1.5 bg-[#1e2227] border-t border-[#21252b] flex items-center justify-between text-[10px] text-[#abb2bf]">
+                                    <span>JavaScript</span>
+                                    <span class="text-[#f1fa8c]">UTF-8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* TARJETA 3: LUKIN THEME */}
+                    <div class="p-4 sm:p-5 lg:p-5.5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-xl min-w-0">
+                        <div>
+                            {/* PUNTOS A LA IZQUIERDA, BADGE A LA DERECHA */}
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#ff79c6]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#bd93f9]"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#50fa7b]"></span>
+                                </div>
+                                <span class="text-[10.5px] sm:text-xs font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.colorThemeBadge || "Tema de color"}
+                                </span>
+                            </div>
+
+                            <h4 class="text-lg sm:text-xl font-bold text-primary-text mb-3">Lukin Theme</h4>
+
+                            {/* VENTANA DE CÓDIGO LUKIN OBSIDIAN COMPACTA */}
+                            <div class="rounded-xl border border-[#1b222d] bg-[#141a24] overflow-hidden font-mono text-xs text-[#e6edf3] shadow-md">
+                                <div class="flex items-center justify-between px-3 py-2 bg-[#0d1117] border-b border-[#1b222d] text-[11px] text-[#7d8590]">
+                                    <span class="flex items-center gap-2 text-[#50fa7b] font-semibold">
+                                        <span class="w-2 h-2 rounded-full bg-[#50fa7b]"></span> app.js
+                                    </span>
+                                    <span class="text-[10px] text-[#bd93f9]">Lukin Obsidian</span>
+                                </div>
+                                <div class="p-3 sm:p-3.5 leading-snug overflow-x-auto">
+                                    <p><span class="text-[#ff79c6]">const</span> <span class="text-[#79c0ff]">region</span> = <span class="text-[#a5d6ff]">&quot;Aysén&quot;</span>;</p>
+                                    <p class="mt-1"><span class="text-[#ff79c6]">function</span> <span class="text-[#7ee787]">optimizeRoutes</span>(<span class="text-[#e6edf3]">data</span>) &#123;</p>
+                                    <p class="pl-4"><span class="text-[#ff79c6]">return</span> <span class="text-[#e6edf3]">data</span>.<span class="text-[#79c0ff]">filter</span>(<span class="text-[#e6edf3]">i</span> =&gt; <span class="text-[#e6edf3]">i</span>.<span class="text-[#7ee787]">active</span>);</p>
+                                    <p>&#125;</p>
+                                    <p class="mt-1"><span class="text-[#ff79c6]">export default</span> <span class="text-[#7ee787]">optimizeRoutes</span>;</p>
+                                </div>
+                                <div class="px-3 py-1.5 bg-[#0d1117] border-t border-[#1b222d] flex items-center justify-between text-[10px] text-[#7d8590]">
+                                    <span>JavaScript</span>
+                                    <span class="text-[#50fa7b] font-bold">Sharp Obsidian</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* SEGUNDA FILA: 4 TARJETAS DE EXTENSIONES (HEADER CON GRID Y GAP REAL DE 16PX) */}
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 pt-1">
+                    
+                    {/* EXTENSIÓN 1: MATERIAL ICON THEME */}
+                    <div class="p-4 sm:p-5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-lg min-w-0">
+                        <div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 mb-4 w-full">
+                                <h4 class="text-[12.5px] sm:text-[13px] md:text-[13.5px] font-bold text-primary-text leading-tight whitespace-nowrap min-w-0">Material Icon Theme</h4>
+                                <span class="text-[9.5px] sm:text-[10px] font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.iconThemeBadge || "Tema de iconos"}
+                                </span>
+                            </div>
+
+                            {/* ÁRBOL DE ARCHIVOS SIMULADO */}
+                            <div class="rounded-xl border border-main-border/10 bg-[#060a12] p-3.5 font-mono text-xs text-gray-300 flex flex-col gap-1.5 shadow-inner">
+                                <div class="flex items-center gap-2 text-amber-400 font-semibold">
+                                    <span>📁</span> <span>src/</span>
+                                </div>
+                                <div class="pl-4 flex items-center gap-2 text-amber-300">
+                                    <span>📁</span> <span>components/</span>
+                                </div>
+                                <div class="pl-4 flex items-center gap-2 text-amber-300">
+                                    <span>📁</span> <span>pages/</span>
+                                </div>
+                                <div class="pl-4 flex items-center gap-2 text-amber-300">
+                                    <span>📁</span> <span>styles/</span>
+                                </div>
+                                <div class="pl-8 flex items-center gap-2 text-sky-400 font-semibold">
+                                    <span>#</span> <span>global.css</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-emerald-400 font-semibold">
+                                    <span>📄</span> <span>package.json</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* EXTENSIÓN 2: PRETTIER */}
+                    <div class="p-4 sm:p-5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-lg min-w-0">
+                        <div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 mb-4 w-full">
+                                <h4 class="text-[12.5px] sm:text-[13px] md:text-[13.5px] font-bold text-primary-text leading-tight whitespace-nowrap min-w-0">Prettier</h4>
+                                <span class="text-[9.5px] sm:text-[10px] font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.formatterBadge || "Formato automático"}
+                                </span>
+                            </div>
+
+                            {/* CÓDIGO FORMATEADO PRETTIER HISTÓRICO */}
+                            <div class="rounded-xl border border-main-border/10 bg-[#060a12] p-3.5 font-mono text-xs text-gray-300 leading-relaxed shadow-inner">
+                                <p class="text-emerald-400/90">// Formato en guardado</p>
+                                <p><span class="text-emerald-400 font-bold">const</span> <span class="text-white">config</span> = &#123;</p>
+                                <p class="pl-4"><span class="text-cyan-300">semi</span>: <span class="text-emerald-400">true</span>,</p>
+                                <p class="pl-4"><span class="text-cyan-300">singleQuote</span>: <span class="text-emerald-400">true</span>,</p>
+                                <p class="pl-4"><span class="text-cyan-300">tabWidth</span>: <span class="text-emerald-400">2</span></p>
+                                <p>&#125;;</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* EXTENSIÓN 3: ERROR LENS */}
+                    <div class="p-4 sm:p-5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-lg min-w-0">
+                        <div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 mb-4 w-full">
+                                <h4 class="text-[12.5px] sm:text-[13px] md:text-[13.5px] font-bold text-primary-text leading-tight whitespace-nowrap min-w-0">Error Lens</h4>
+                                <span class="text-[9.5px] sm:text-[10px] font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.errorLensBadge || "Errores en línea"}
+                                </span>
+                            </div>
+
+                            {/* ADVERTENCIA EN LÍNEA SIMULADA EXACTA DE LA IMAGEN B */}
+                            <div class="rounded-xl border border-main-border/10 bg-[#060a12] p-3.5 font-mono text-xs text-gray-300 flex flex-col gap-1.5 shadow-inner overflow-hidden">
+                                <p><span class="text-emerald-400 font-bold">const</span> <span class="text-cyan-300">routes</span> = [];</p>
+                                <div class="bg-red-500/20 border-l-2 border-red-500 px-2 py-0.5 my-0.5 rounded-r text-red-300 text-[10.5px] font-medium flex items-center gap-1.5 overflow-hidden truncate">
+                                    <span class="shrink-0">const x = ;</span> <span class="text-red-400 font-bold ml-1 truncate">❌ Expected expression</span>
+                                </div>
+                                <p><span class="text-[#ff79c6]">export default</span> routes;</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* EXTENSIÓN 4: INDENT RAINBOW */}
+                    <div class="p-4 sm:p-5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-4 shadow-lg min-w-0">
+                        <div>
+                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 mb-4 w-full">
+                                <h4 class="text-[12.5px] sm:text-[13px] md:text-[13.5px] font-bold text-primary-text leading-tight whitespace-nowrap min-w-0">Indent Rainbow</h4>
+                                <span class="text-[9.5px] sm:text-[10px] font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                    {tWorkspace.indentBadge || "Lectura estructural"}
+                                </span>
+                            </div>
+
+                            {/* SANGRIAS COLOREADAS SIMULADAS DE LA IMAGEN B */}
+                            <div class="rounded-xl border border-main-border/10 bg-[#060a12] p-3.5 font-mono text-xs text-gray-300 leading-relaxed shadow-inner">
+                                <p><span class="text-emerald-400 font-bold">function</span> <span class="text-cyan-300">parse</span>() &#123;</p>
+                                <div class="border-l-2 border-amber-500/30 pl-4 py-0.5">
+                                    <p><span class="text-purple-400">if</span> (valid) &#123;</p>
+                                    <div class="border-l-2 border-emerald-500/30 pl-4 py-0.5">
+                                        <p class="text-emerald-300">return true;</p>
+                                    </div>
+                                    <p>&#125;</p>
+                                </div>
+                                <p>&#125;</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* TERCERA FILA: BLOQUE POKÉMON INTEGRADO CON EL SISTEMA DE TEMAS DE SUPERFICIE */}
+                <div class="p-4.5 sm:p-5 rounded-2xl border border-main-border/10 bg-surface-soft/30 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-xl min-w-0">
+                    <div class="flex flex-col gap-1 min-w-0">
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+                            <h4 class="text-base font-bold text-primary-text">VSCode Pokémon</h4>
+                            <span class="text-xs font-mono text-emerald-400/90 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                {tWorkspace.pokemonSecondaryBadge || "Personalización secundaria"}
+                            </span>
+                        </div>
+                        <p class="text-xs text-secondary-text pl-5">
+                            {tWorkspace.pokemonDesc || "Detalle personal en la barra de estado del editor."}
+                        </p>
+                    </div>
+
+                    {/* 4 BADGES COMPACTOS DERECHOS CON PUNTO DE COLOR */}
+                    <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0d1f1c] border border-emerald-500/30 text-emerald-400 text-xs font-mono font-medium whitespace-nowrap">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Rayquaza
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0f1d2d] border border-sky-500/30 text-sky-300 text-xs font-mono font-medium whitespace-nowrap">
+                            <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Latios
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#132213] border border-lime-500/30 text-lime-300 text-xs font-mono font-medium whitespace-nowrap">
+                            <span class="w-1.5 h-1.5 rounded-full bg-lime-400"></span> Sceptile
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#15152a] border border-indigo-500/30 text-indigo-300 text-xs font-mono font-medium whitespace-nowrap">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> Dialga
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* SECCIÓN 4: CIERRE EDITORIAL Y ENLACE A PROYECTOS */}
+            <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <p class="text-base text-secondary-text max-w-2xl leading-relaxed">
+                    {tCapabilitiesPage.ctaText}
+                </p>
+                <a 
+                    href={localizedUrl('/proyectos', currentLocale)} 
+                    class="inline-flex items-center gap-2 text-sm font-bold text-accent-cyan hover:text-accent-cyan/80 transition-colors shrink-0 focus-visible:outline-none focus-visible:underline"
+                >
+                    {tCapabilitiesPage.ctaButton || "Ver proyectos"} <ArrowRight className="w-4 h-4" />
+                </a>
+            </div>
+
+            {/* BOTÓN REGRESO A INICIO */}
+            <div class="flex justify-center md:justify-start pt-2">
+                <a href={localizedUrl('/', currentLocale)} class="inline-flex items-center gap-2 text-sm font-bold text-primary-text hover:text-accent-cyan transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 rounded">
+                    <svg class="w-4 h-4 rotate-180 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    {tCapabilitiesPage.backHome || "Volver al inicio"}
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <Footer lang={currentLocale} />
+</Layout>

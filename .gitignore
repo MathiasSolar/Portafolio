@@ -16,6 +16,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# lighthouse
+lighthouse-*.json
+
 # runtime
 pids
 *.pid

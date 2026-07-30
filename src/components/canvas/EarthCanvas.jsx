@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { geoOrthographic, geoPath } from 'd3-geo';
 
 const CLOUD_PATCHES = [
@@ -34,7 +34,7 @@ export default function EarthCanvas() {
   const [geoData, setGeoData] = useState(null);
 
   useEffect(() => {
-    const mapUrl = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+    const mapUrl = "/world.geojson";
     fetch(mapUrl)
       .then(res => res.json())
       .then(data => {
@@ -51,7 +51,14 @@ export default function EarthCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    let animationFrameId = null;
+    let isInViewport = false;
+    let isPageVisible = !document.hidden;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let prefersReducedMotion = motionQuery.matches;
+    const shouldAnimate = () => isInViewport && isPageVisible && !prefersReducedMotion;
+    let accumulatedTime = Date.now();
+    let lastFrameTime = null;
     let width = window.innerWidth;
     let height = window.innerHeight;
     let dpr = window.devicePixelRatio || 1;
@@ -64,10 +71,19 @@ export default function EarthCanvas() {
     const lightDirY = -0.7;
     const lightDirZ = -0.45;
 
-    const render = () => {
+    const render = (timestamp) => {
       ctx.clearRect(0, 0, width, height);
 
-      const time = Date.now() * 0.0002;
+      const currentFrameTime = timestamp || performance.now();
+      if (lastFrameTime !== null) {
+        const delta = currentFrameTime - lastFrameTime;
+        if (delta > 0 && delta < 500) {
+          accumulatedTime += delta;
+        }
+      }
+      lastFrameTime = currentFrameTime;
+
+      const time = accumulatedTime * 0.0002;
       const rotationDeg = -time * 50 + 60; 
       const cloudRotationDeg = -time * 55 + 60;
 
@@ -75,31 +91,27 @@ export default function EarthCanvas() {
       const centerX = width > 1024 ? width * 0.75 : width * 0.5;
       const centerY = height * 0.5;
 
-      // Colores ajustados para que brillen por sí solos sin necesitar 'mix-blend-mode: screen'
       const oceanGrad = ctx.createRadialGradient(
         centerX - radius * 0.2, centerY - radius * 0.2, radius * 0.2,
         centerX, centerY, radius
       );
-      // Océano más luminoso y vibrante base
       oceanGrad.addColorStop(0, '#1e4b8f'); 
       oceanGrad.addColorStop(0.5, '#102a5c');
       oceanGrad.addColorStop(1, '#051126');
 
-      const continentFill = 'rgba(46, 115, 75, 0.85)'; // Continentes un poco más claros
+      const continentFill = 'rgba(46, 115, 75, 0.85)';
       const continentStroke = 'rgba(168, 149, 114, 0.4)';
       const chileFill = 'rgba(34, 197, 94, 0.65)';
       const chileStroke = 'rgba(34, 211, 238, 0.95)';
       const markerColor = 'rgba(249, 115, 22, 1)';
       const markerGlowColor = 'rgba(249, 115, 22, 0.8)';
 
-      // 1. Atmosphere Glow (El aura difuminada alrededor)
+      // 1. Atmosphere Glow
       const glowRadius = radius * 1.35;
       const atmosGlow = ctx.createRadialGradient(
         centerX - radius * 0.15, centerY - radius * 0.15, radius * 0.85,
         centerX, centerY, glowRadius
       );
-      
-      // Aura fija, brillante pero controlada
       atmosGlow.addColorStop(0, 'rgba(56, 189, 248, 0.18)');
       atmosGlow.addColorStop(0.4, 'rgba(56, 189, 248, 0.08)');
       atmosGlow.addColorStop(0.7, 'rgba(99, 102, 241, 0.02)');
@@ -154,8 +166,6 @@ export default function EarthCanvas() {
       const rotationRadY = (rotationDeg * Math.PI) / 180;
       const rotationRadX = 0; 
       
-      const cosY = Math.cos(rotationRadY);
-      const sinY = Math.sin(rotationRadY);
       const cosX = Math.cos(rotationRadX);
       const sinX = Math.sin(rotationRadX);
 
@@ -219,7 +229,7 @@ export default function EarthCanvas() {
         }
       });
 
-      // 5. Sphere 3D Shading (Sombras para dar volumen)
+      // 5. Sphere 3D Shading
       const highlightX = centerX - radius * 0.35;
       const highlightY = centerY - radius * 0.35;
       const shading = ctx.createRadialGradient(
@@ -238,7 +248,7 @@ export default function EarthCanvas() {
       ctx.fill();
 
       // 6. City Lights on Dark Side
-      const now = Date.now();
+      const now = accumulatedTime;
       CITY_LIGHTS.forEach((city, idx) => {
         const p = projectPoint(city.lon, city.lat);
         if (p.z > 0.05) {
@@ -297,7 +307,7 @@ export default function EarthCanvas() {
         ctx.fillText('Coyhaique', screenX + 14, screenY + 4);
       }
 
-      // 8. Atmosphere Rim Light (Borde brillante fijo)
+      // 8. Atmosphere Rim Light
       const rimGlow = ctx.createRadialGradient(
         centerX - radius * 0.3, centerY - radius * 0.3, radius * 0.8,
         centerX, centerY, radius * 1.05
@@ -313,10 +323,70 @@ export default function EarthCanvas() {
       ctx.fillStyle = rimGlow;
       ctx.fill();
 
+      if (shouldAnimate()) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        animationFrameId = null;
+      }
+    };
+
+    const startAnimation = () => {
+      if (!shouldAnimate()) return;
+      if (animationFrameId !== null) return;
+      lastFrameTime = null;
       animationFrameId = requestAnimationFrame(render);
     };
 
+    const stopAnimation = () => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+      lastFrameTime = null;
+    };
+
     render();
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isInViewport = entry.isIntersecting;
+        if (shouldAnimate()) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer.observe(canvas);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isPageVisible = false;
+        stopAnimation();
+      } else {
+        isPageVisible = true;
+        if (shouldAnimate()) {
+          startAnimation();
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const handleMotionPreferenceChange = (event) => {
+      prefersReducedMotion = event.matches;
+      if (prefersReducedMotion) {
+        stopAnimation();
+        render();
+      } else {
+        if (shouldAnimate()) {
+          startAnimation();
+        }
+      }
+    };
+
+    motionQuery.addEventListener("change", handleMotionPreferenceChange);
 
     const handleResize = () => {
       width = window.innerWidth;
@@ -326,19 +396,27 @@ export default function EarthCanvas() {
       canvas.height = height * dpr;
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+      if (!shouldAnimate()) {
+        lastFrameTime = null;
+        render();
+      }
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      motionQuery.removeEventListener("change", handleMotionPreferenceChange);
+      stopAnimation();
+      if (observer) {
+        observer.disconnect();
+      }
     };
   }, [geoData]);
 
   return (
     <canvas
       ref={canvasRef}
-      /* Aquí quitamos el mix-blend-screen para siempre, usando normal por defecto */
       className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 opacity-90 transition-none mix-blend-normal"
     />
   );

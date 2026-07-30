@@ -1,0 +1,16 @@
+---
+import CapabilitiesPage from '../../../components/pages/CapabilitiesPage.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'pt' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params;
+---
+
+<CapabilitiesPage lang={lang} />

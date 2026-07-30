@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../ui/Navbar.jsx';
+import ProjectCard from '../ui/ProjectCard.jsx';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import Footer from '../ui/Footer.astro';
+import { PROJECTS_DATA } from '../../data/projects.js';
+import { localizedUrl, getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+const currentLocale = getSupportedLocale(lang || Astro.params.lang || 'es');
+const tProjectsPage = ((translations as any)[currentLocale] || translations.es).projectsPage;
+---
+
+<Layout 
+    title={tProjectsPage.metaTitle || "Proyectos | Mathias Solar"}
+    description={tProjectsPage.metaDesc || "Selección de proyectos de desarrollo de software, plataformas institucionales y soluciones digitales creadas por Mathias Solar."}
+    lang={currentLocale}
+>
+    <Navbar client:load currentPage="projects" currentLocale={currentLocale} />
+    
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none pt-32 pb-24 md:pt-40 md:pb-32">
+        <Breadcrumbs lang={currentLocale} items={[{ label: 'Inicio', href: '/' }, { label: tProjectsPage.title || 'Proyectos' }]} />
+        <div class="max-w-7xl mx-auto px-6 flex flex-col gap-12 md:gap-16">
+            
+            <div class="flex flex-col gap-3 text-center md:text-left">
+                <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                    {tProjectsPage.badge || "PORTAFOLIO DE INGENIERÍA"}
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-text tracking-tight leading-tight">
+                    {tProjectsPage.title || "Proyectos"}
+                </h1>
+                <p class="text-lg md:text-xl text-secondary-text max-w-3xl leading-relaxed mt-1">
+                    {tProjectsPage.lead}
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                {PROJECTS_DATA.map(proj => (
+                    <ProjectCard client:load project={proj} lang={currentLocale} />
+                ))}
+            </div>
+            
+            <div class="flex justify-center md:justify-start mt-8">
+                <a href={localizedUrl('/#projects', currentLocale)} class="inline-flex items-center gap-2 text-[15px] font-bold text-primary-text hover:text-accent-cyan transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 rounded">
+                    <svg class="w-4 h-4 rotate-180 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    {tProjectsPage.backHome || "Volver al inicio"}
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <Footer lang={currentLocale} />
+</Layout>

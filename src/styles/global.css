@@ -1,47 +1,154 @@
 @import "tailwindcss";
 
 @theme {
+  /* Tipografías base */
+  --font-sans: 'Geist Sans', 'Montserrat', sans-serif;
+  --font-serif: 'Newsreader', serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  /* Exportación de tokens a Tailwind (compatibilidad y nuevos) */
   --color-main-bg: var(--bg-main);
+  --color-base-bg: var(--bg-main);
   --color-alt-bg: var(--bg-alt);
   --color-card-bg: var(--bg-card);
   --color-nav-bg: var(--bg-nav);
   --color-input-bg: var(--bg-input);
+
   --color-primary-text: var(--text-primary);
+  --color-text-primary: var(--text-primary);
+  --color-text-main: var(--text-primary);
+  --color-main-text: var(--text-primary);
+
   --color-secondary-text: var(--text-secondary);
+  --color-text-secondary: var(--text-secondary);
+
   --color-muted-text: var(--text-muted);
+  --color-text-muted: var(--text-muted);
+
+  --color-decorative-text: var(--decorative-text);
+
   --color-main-border: var(--border-color);
+  --color-border-color: var(--border-color);
   --color-hover-border: var(--border-hover);
+  
+  /* Alias temporal por compatibilidad. Migrar gradualmente a accent. */
   --color-accent-cyan: var(--accent-cyan);
+  
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-focus: var(--focus);
+  --color-success: var(--success);
+  --color-error: var(--error);
 }
 
 :root {
-  /* Modo Oscuro — Cosmos Minimalista */
-  --bg-main: #030712;
-  --bg-alt: #0a1224;
-  --bg-card: #111827;
-  --bg-nav: rgba(3, 7, 18, 0.8);
-  --bg-input: rgba(17, 24, 39, 0.6);
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border-color: rgba(99, 102, 241, 0.08);
-  --border-hover: rgba(99, 102, 241, 0.2);
-  --accent-cyan: #818cf8;      /* Indigo suave */
+  --theme-transition-duration: 220ms;
+  --theme-transition-easing: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* MODO OSCURO (Default) */
+  /* A. Tokens fuente */
+  --theme-main-bg: #050B14;
+  --theme-surface: #0B1325;
+  --theme-surface-soft: #111D35;
+  --theme-input-bg: #15213A;
+  --theme-primary-text: #F8FAFC;
+  --theme-secondary-text: #CBD5E1;
+  --theme-muted-text: #94A3B8;
+  --theme-decorative-text: #94A3B8;
+  --theme-border: rgba(148, 163, 184, 0.16);
+  --theme-accent: #52B788;
+  --theme-accent-hover: #74C69D;
+  --theme-accent-secondary: #8DA9C4;
+  --theme-focus: #74C69D;
+  --theme-success: #52B788;
+  --theme-error: #F97066;
+
+  /* B. Variables de compatibilidad */
+  --bg-main: var(--theme-main-bg);
+  --bg-alt: var(--theme-surface-soft);
+  --bg-card: var(--theme-surface);
+  --bg-nav: rgba(5, 11, 20, 0.85); /* azul marino translúcido */
+  --bg-input: var(--theme-input-bg);
+  --text-primary: var(--theme-primary-text);
+  --text-secondary: var(--theme-secondary-text);
+  --text-muted: var(--theme-muted-text);
+  --decorative-text: var(--theme-decorative-text);
+  --border-color: var(--theme-border);
+  --border-hover: var(--theme-accent-secondary);
+  --accent-cyan: var(--theme-accent);
+  
+  --surface: var(--theme-surface);
+  --surface-soft: var(--theme-surface-soft);
+  --accent: var(--theme-accent);
+  --accent-hover: var(--theme-accent-hover);
+  --accent-secondary: var(--theme-accent-secondary);
+  --focus: var(--theme-focus);
+  --success: var(--theme-success);
+  --error: var(--theme-error);
+
+  /* Selección de texto oscuro */
+  --selection-bg: #5eead4;
+  --selection-text: #050B14;
 }
 
 :root.light-mode {
-  /* Modo Claro */
-  --bg-main: #f8fafc;
-  --bg-alt: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-nav: rgba(248, 250, 252, 0.85);
-  --bg-input: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --border-color: rgba(15, 23, 42, 0.06);
-  --border-hover: rgba(15, 23, 42, 0.14);
-  --accent-cyan: #4f46e5;      /* Indigo más profundo */
+  /* MODO CLARO - CONTRASTE Y LEGIBILIDAD EDITORIAL (OLD MONEY) */
+  /* A. Tokens fuente */
+  --theme-main-bg: #F7F6F2;
+  --theme-surface: #FFFFFF;
+  --theme-surface-soft: #EFECE6;
+  --theme-input-bg: #EBE8E0;
+  --theme-primary-text: #0F172A;
+  --theme-secondary-text: #334155;
+  --theme-muted-text: #475569;
+  --theme-decorative-text: #64748B;
+  --theme-border: #CBD5E1;
+  --theme-accent: #166534;
+  --theme-accent-hover: #14532D;
+  --theme-accent-secondary: #1E3A8A;
+  --theme-focus: #166534;
+  --theme-success: #166534;
+  --theme-error: #B42318;
+
+  /* B. Variables de compatibilidad */
+  --bg-main: var(--theme-main-bg);
+  --bg-alt: var(--theme-surface-soft);
+  --bg-card: var(--theme-surface);
+  --bg-nav: rgba(247, 246, 242, 0.90);
+  --bg-input: var(--theme-input-bg);
+  --text-primary: var(--theme-primary-text);
+  --text-secondary: var(--theme-secondary-text);
+  --text-muted: var(--theme-muted-text);
+  --decorative-text: var(--theme-decorative-text);
+  --border-color: var(--theme-border);
+  --border-hover: var(--theme-accent-secondary);
+  --accent-cyan: var(--theme-accent);
+  
+  --surface: var(--theme-surface);
+  --surface-soft: var(--theme-surface-soft);
+  --accent: var(--theme-accent);
+  --accent-hover: var(--theme-accent-hover);
+  --accent-secondary: var(--theme-accent-secondary);
+  --focus: var(--theme-focus);
+  --success: var(--theme-success);
+  --error: var(--theme-error);
+
+  /* Selección de texto claro */
+  --selection-bg: #166534;
+  --selection-text: #ffffff;
+}
+
+::selection {
+  background-color: var(--selection-bg) !important;
+  color: var(--selection-text) !important;
+}
+
+::-moz-selection {
+  background-color: var(--selection-bg) !important;
+  color: var(--selection-text) !important;
 }
 
 /* ═══════════════════════════════════════
@@ -51,6 +158,7 @@
 /* Capa 1: Estrellas diminutas */
 .stars-small {
   width: 1px; height: 1px;
+  opacity: 0.20;
   box-shadow:
     24px 80px #e2e8f0, 130px 200px #e2e8f0, 280px 50px #e2e8f0,
     450px 320px #e2e8f0, 600px 180px #e2e8f0, 750px 400px #e2e8f0,
@@ -82,6 +190,7 @@
 /* Capa 2: Estrellas medianas */
 .stars-medium {
   width: 2px; height: 2px;
+  opacity: 0.25;
   box-shadow:
     100px 150px #cbd5e1, 350px 80px #cbd5e1, 550px 300px #cbd5e1,
     800px 220px #cbd5e1, 1050px 50px #cbd5e1, 1250px 380px #cbd5e1,
@@ -106,6 +215,7 @@
 /* Capa 3: Estrellas grandes y brillantes */
 .stars-large {
   width: 2px; height: 2px; border-radius: 50%;
+  opacity: 0.30;
   box-shadow:
     250px 120px rgba(129, 140, 248, 0.7), 650px 350px rgba(129, 140, 248, 0.5),
     1100px 180px rgba(129, 140, 248, 0.6), 400px 700px rgba(129, 140, 248, 0.4),
@@ -137,23 +247,30 @@
 
 /* Estrellas visibles en modo claro — invertidas para ser oscuras sobre fondo claro */
 :root.light-mode .stars-small {
-  opacity: 0.55;
+  opacity: 0.03;
   filter: invert(1) brightness(0.6);
   transition: opacity 0.5s ease;
 }
 :root.light-mode .stars-medium {
-  opacity: 0.45;
+  opacity: 0.05;
   filter: invert(1) brightness(0.55);
   transition: opacity 0.5s ease;
 }
 :root.light-mode .stars-large {
-  opacity: 0.35;
+  opacity: 0.08;
   filter: invert(1) brightness(0.5);
   transition: opacity 0.5s ease;
 }
 :root.light-mode .shooting-stars-container {
-  opacity: 0.5;
+  opacity: 0.1;
   transition: opacity 0.5s ease;
+}
+
+/* Preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .stars-small, .stars-medium, .stars-large, .shooting-star {
+    animation: none !important;
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -207,54 +324,305 @@
 .shooting-star:nth-child(4) { --star-top: -10%; --star-left: 60%; --star-duration: 6s; --star-delay: 1.2s; }
 .shooting-star:nth-child(5) { --star-top: 50%; --star-left: 90%; --star-duration: 10s; --star-delay: 3.5s; }
 
+
+
+
+
+
+
 /* ═══════════════════════════════════════
-   VIEW TRANSITIONS API — Circular Wipe
+   TRANSICIÓN TEMPORAL DE COLORES
    ═══════════════════════════════════════ */
-::view-transition-old(root) {
+html.theme-switching body,
+html.theme-switching header,
+html.theme-switching footer,
+html.theme-switching main,
+html.theme-switching .theme-color-transition,
+html.theme-switching button,
+html.theme-switching a {
+  transition: background-color var(--theme-transition-duration) var(--theme-transition-easing), 
+              color var(--theme-transition-duration) var(--theme-transition-easing), 
+              border-color var(--theme-transition-duration) var(--theme-transition-easing),
+              box-shadow var(--theme-transition-duration) var(--theme-transition-easing) !important;
+}
+
+/* Prevenir destellos de hover durante la transición clásica */
+html.theme-switching button:hover,
+html.theme-switching a:hover {
+  transition-duration: var(--theme-transition-duration) !important;
+}
+
+/* ═══════════════════════════════════════
+   VIEW TRANSITION API (Efecto Radial)
+   ═══════════════════════════════════════ */
+::view-transition-old(root),
+::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
   z-index: 1;
 }
 
 ::view-transition-new(root) {
   z-index: 2;
-  mix-blend-mode: normal;
-  /* Duración de 0.8s para dar un efecto dramático y fluido */
-  animation: expand-theme 0.8s ease-in-out both; 
 }
 
-@keyframes expand-theme {
-  from {
-    /* Usa las coordenadas guardadas en JS o el centro por defecto si fallan */
-    clip-path: circle(0px at var(--click-x, 50%) var(--click-y, 50%));
-  }
-  to {
-    /* 150% se asegura de cubrir toda la pantalla sea cual sea su tamaño */
-    clip-path: circle(150% at var(--click-x, 50%) var(--click-y, 50%));
-  }
+/* Evitar que las transiciones clásicas compitan con el snapshot */
+html.theme-view-transition,
+html.theme-view-transition body,
+html.theme-view-transition header,
+html.theme-view-transition footer,
+html.theme-view-transition main,
+html.theme-view-transition button,
+html.theme-view-transition a {
+  transition: none !important;
+}
+
+/* Exclusión explícita para proteger el Hero y EarthCanvas */
+html.theme-switching #hero,
+html.theme-switching #hero canvas,
+html.theme-switching #hero * {
+  transition-property: none !important;
 }
 
 /* ═══════════════════════════════════════
-   AISLAMIENTO DEL MAPA (EarthCanvas)
+   HERO & NAVBAR EN MODO OSCURO (Default)
    ═══════════════════════════════════════ */
-.earth-isolate {
-  /* Esto saca completamente al mapa del árbol de animación global 'root' */
-  view-transition-name: map-canvas;
+#hero {
+  background-color: #050B14;
+  color: #F8FAFC;
+  --color-main-bg: #050B14;
+  --bg-main: #050B14;
+  --color-primary-text: #F8FAFC;
+  --text-primary: #F8FAFC;
+  --theme-primary-text: #F8FAFC;
+  --color-text-main: #F8FAFC;
+  --color-secondary-text: #CBD5E1;
+  --text-secondary: #CBD5E1;
+  --theme-secondary-text: #CBD5E1;
+  --color-muted-text: #94A3B8;
+  --text-muted: #94A3B8;
+  --theme-muted-text: #94A3B8;
+  --color-main-border: rgba(99, 102, 241, 0.16);
+  --border-color: rgba(99, 102, 241, 0.16);
+  --color-accent: #52B788;
+  --accent-cyan: #52B788;
 }
 
-/* Evitamos que el navegador haga capturas o animaciones pesadas sobre el canvas */
-::view-transition-group(map-canvas),
-::view-transition-old(map-canvas),
-::view-transition-new(map-canvas) {
-  animation: none;
-  mix-blend-mode: normal;
+/* ═══════════════════════════════════════
+   HERO & NAVBAR EN MODO CLARO (Integración crema Old Money)
+   ═══════════════════════════════════════ */
+:root.light-mode header {
+  background-color: rgba(247, 246, 242, 0.90) !important;
+  border-bottom-color: rgba(203, 213, 225, 0.4) !important;
+  box-shadow: 0 1px 0 rgba(23, 32, 51, 0.04);
 }
 
-/* Forzamos a que las variables del mapa conserven el estilo oscuro de manera estática, 
-   evitando parpadeos gráficos de D3 o WebGL al mutar clases en el HTML */
-:root.light-mode .earth-isolate {
-  --bg-main: #030712;
-  --text-primary: #e2e8f0;
-  --border-color: rgba(99, 102, 241, 0.08);
-  --accent-cyan: #818cf8;
+:root.light-mode #hero {
+  background-color: #F7F6F2 !important;
+  color: #0F172A !important;
+  --color-main-bg: #F7F6F2;
+  --bg-main: #F7F6F2;
+  --color-primary-text: #0F172A;
+  --text-primary: #0F172A;
+  --theme-primary-text: #0F172A;
+  --color-text-main: #0F172A;
+  --color-secondary-text: #334155;
+  --text-secondary: #334155;
+  --theme-secondary-text: #334155;
+  --color-muted-text: #475569;
+  --text-muted: #475569;
+  --theme-muted-text: #475569;
+  --color-main-border: #CBD5E1;
+  --border-color: #CBD5E1;
+  --color-accent: #166534;
+  --accent-cyan: #166534;
+}
+
+:root.light-mode #hero .hero-title,
+:root.light-mode #hero h1 {
+  color: #0F172A !important;
+}
+
+:root.light-mode #hero h2 {
+  color: #334155 !important;
+}
+
+:root.light-mode #hero p {
+  color: #475569 !important;
+}
+
+:root.light-mode #hero a {
+  color: #0F172A !important;
+  border-color: #0F172A !important;
+}
+
+:root.light-mode #hero a:hover {
+  color: #166534 !important;
+  border-color: #166534 !important;
+}
+
+:root.light-mode #hero svg {
+  color: #0F172A !important;
+}
+
+/* Halo sutil cósmico para el planeta sobre fondo crema en modo claro */
+:root.light-mode #hero .earth-isolate::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, rgba(34, 197, 94, 0.06) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 1024px) {
+  :root.light-mode #hero .earth-isolate::before {
+    left: 50%;
+    width: 380px;
+    height: 380px;
+  }
+}
+
+:root.light-mode #hero h1,
+:root.light-mode #hero h2,
+:root.light-mode #hero p,
+:root.light-mode #hero a,
+:root.light-mode #hero svg {
+  color: inherit;
+}
+
+/* ═══════════════════════════════════════
+   REFUERZO GLOBAL DE VISIBILIDAD Y CONTRASTE EN MODO CLARO
+   ═══════════════════════════════════════ */
+
+/* A. Tarjetas y Superficies */
+:root.light-mode .bg-surface-soft\/30,
+:root.light-mode .bg-surface-soft\/40,
+:root.light-mode .bg-surface-soft\/50,
+:root.light-mode .bg-card-bg\/20,
+:root.light-mode .bg-card-bg\/30,
+:root.light-mode .bg-card-bg\/40 {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+:root.light-mode .bg-surface-soft {
+  background-color: #EFECE6 !important;
+}
+
+/* B. Bordes y Separadores Visibles */
+:root.light-mode [class*="border-main-border/10"],
+:root.light-mode [class*="border-main-border/15"],
+:root.light-mode [class*="border-main-border/20"],
+:root.light-mode [class*="border-main-border/30"] {
+  border-color: #CBD5E1 !important;
+}
+
+:root.light-mode [class*="divide-main-border/"] > * + * {
+  border-color: #CBD5E1 !important;
+}
+
+/* C. Formulario de Contacto en Modo Claro */
+:root.light-mode form input,
+:root.light-mode form textarea,
+:root.light-mode form select,
+:root.light-mode .bg-input-bg {
+  background-color: #EBE8E0 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+:root.light-mode form input::placeholder,
+:root.light-mode form textarea::placeholder {
+  color: #475569 !important;
+  opacity: 0.9 !important;
+}
+
+:root.light-mode form input:focus,
+:root.light-mode form textarea:focus {
+  border-color: #166534 !important;
+  box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.2) !important;
+}
+
+/* D. Textos Secundarios y Muted en Modo Claro */
+:root.light-mode [class*="text-text-muted/"],
+:root.light-mode [class*="text-secondary-text/"],
+:root.light-mode [class*="text-muted-text/"] {
+  opacity: 0.92 !important;
+}
+
+/* E. Badges y Enlaces Verdes en Modo Claro */
+:root.light-mode [class*="bg-emerald-500/"],
+:root.light-mode [class*="bg-green-500/"],
+:root.light-mode [class*="bg-accent/"] {
+  background-color: rgba(22, 101, 52, 0.12) !important;
+}
+
+:root.light-mode [class*="text-emerald-"],
+:root.light-mode [class*="text-green-"] {
+  color: #14532D !important;
+}
+
+/* ═══════════════════════════════════════
+   NUEVAS UTILIDADES EDITORIALES (Old Money)
+   ═══════════════════════════════════════ */
+.editorial-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+
+.editorial-section {
+  position: relative;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+/* ═══════════════════════════════════════
+   COMPORTAMIENTO DE SCROLL Y NAVEGACIÓN
+   ═══════════════════════════════════════ */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Compensación de Navbar fixed (64px + holgura = 80px) */
+#about,
+#experience,
+#projects,
+#contact,
+.anchor-section {
+  scroll-margin-top: 5rem;
+}
+
+/* Skip link accesible */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  background-color: var(--color-text-main);
+  color: var(--color-base-bg);
+  padding: 0.75rem 1.25rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus, .skip-link:focus-visible {
+  top: 1rem;
+  outline: 2px solid var(--color-accent-main);
+  outline-offset: 2px;
 }

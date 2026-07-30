@@ -1,0 +1,50 @@
+---
+import { ChevronRight } from 'lucide-react';
+import { localizedUrl, getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+
+interface Props {
+  items: {
+    label: string;
+    href?: string;
+  }[];
+  lang?: string;
+}
+
+const { items, lang } = Astro.props;
+const currentLocale = getSupportedLocale(lang || Astro.params.lang || 'es');
+const tBreadcrumbs = ((translations as any)[currentLocale] || translations.es).breadcrumbs;
+---
+
+<nav aria-label={tBreadcrumbs?.navLabel || "Migas de pan"} class="mb-8 md:mb-10 w-full max-w-7xl mx-auto px-6">
+  <ol class="flex items-center gap-2 flex-wrap">
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      const targetHref = item.href ? localizedUrl(item.href, currentLocale) : undefined;
+
+      return (
+        <li class="flex items-center gap-2 text-[13px] sm:text-[14px]">
+          {targetHref && !isLast ? (
+            <a 
+              href={targetHref} 
+              class="text-secondary-text hover:text-primary-text transition-colors focus-visible:outline-none focus-visible:underline decoration-1 underline-offset-4 py-1 px-1 -my-1 rounded"
+            >
+              {item.label}
+            </a>
+          ) : (
+            <span 
+              class="text-primary-text font-medium" 
+              aria-current={isLast ? "page" : undefined}
+            >
+              {item.label}
+            </span>
+          )}
+          
+          {!isLast && (
+            <ChevronRight className="w-3.5 h-3.5 text-muted-text opacity-50 flex-shrink-0" aria-hidden="true" />
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

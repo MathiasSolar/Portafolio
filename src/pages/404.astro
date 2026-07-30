@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/ui/Navbar.jsx';
+import Footer from '../components/ui/Footer.astro';
+import { ArrowLeft, FolderKanban } from 'lucide-react';
+import { translations } from '../i18n/translations';
+import { localizedUrl } from '../i18n/utils';
+
+const defaultNotFound = translations.es.notFoundPage;
+
+const notFoundDict = {
+  es: translations.es.notFoundPage,
+  en: translations.en.notFoundPage,
+  fr: translations.fr.notFoundPage,
+  pt: translations.pt.notFoundPage,
+  'zh-CN': translations['zh-CN'].notFoundPage
+};
+
+const footerDict = {
+  es: {
+    role: translations.es.footer.role,
+    rights: translations.es.footer.rights,
+    home: translations.es.footer.home,
+    homeHref: localizedUrl('/', 'es'),
+    projects: translations.es.footer.projects,
+    projectsHref: localizedUrl('/proyectos', 'es'),
+    contact: translations.es.footer.contact,
+    contactHref: localizedUrl('/contacto', 'es'),
+    linkedinAria: translations.es.footer.linkedinAria,
+    githubAria: translations.es.footer.githubAria,
+    spotifyAria: translations.es.footer.spotifyAria
+  },
+  en: {
+    role: translations.en.footer.role,
+    rights: translations.en.footer.rights,
+    home: translations.en.footer.home,
+    homeHref: localizedUrl('/', 'en'),
+    projects: translations.en.footer.projects,
+    projectsHref: localizedUrl('/proyectos', 'en'),
+    contact: translations.en.footer.contact,
+    contactHref: localizedUrl('/contacto', 'en'),
+    linkedinAria: translations.en.footer.linkedinAria,
+    githubAria: translations.en.footer.githubAria,
+    spotifyAria: translations.en.footer.spotifyAria
+  },
+  fr: {
+    role: translations.fr.footer.role,
+    rights: translations.fr.footer.rights,
+    home: translations.fr.footer.home,
+    homeHref: localizedUrl('/', 'fr'),
+    projects: translations.fr.footer.projects,
+    projectsHref: localizedUrl('/proyectos', 'fr'),
+    contact: translations.fr.footer.contact,
+    contactHref: localizedUrl('/contacto', 'fr'),
+    linkedinAria: translations.fr.footer.linkedinAria,
+    githubAria: translations.fr.footer.githubAria,
+    spotifyAria: translations.fr.footer.spotifyAria
+  },
+  pt: {
+    role: translations.pt.footer.role,
+    rights: translations.pt.footer.rights,
+    home: translations.pt.footer.home,
+    homeHref: localizedUrl('/', 'pt'),
+    projects: translations.pt.footer.projects,
+    projectsHref: localizedUrl('/proyectos', 'pt'),
+    contact: translations.pt.footer.contact,
+    contactHref: localizedUrl('/contacto', 'pt'),
+    linkedinAria: translations.pt.footer.linkedinAria,
+    githubAria: translations.pt.footer.githubAria,
+    spotifyAria: translations.pt.footer.spotifyAria
+  },
+  'zh-CN': {
+    role: translations['zh-CN'].footer.role,
+    rights: translations['zh-CN'].footer.rights,
+    home: translations['zh-CN'].footer.home,
+    homeHref: localizedUrl('/', 'zh-CN'),
+    projects: translations['zh-CN'].footer.projects,
+    projectsHref: localizedUrl('/proyectos', 'zh-CN'),
+    contact: translations['zh-CN'].footer.contact,
+    contactHref: localizedUrl('/contacto', 'zh-CN'),
+    linkedinAria: translations['zh-CN'].footer.linkedinAria,
+    githubAria: translations['zh-CN'].footer.githubAria,
+    spotifyAria: translations['zh-CN'].footer.spotifyAria
+  }
+};
+---
+
+<Layout 
+    title={defaultNotFound.metaTitle}
+    description={defaultNotFound.metaDesc}
+    noindex={true}
+    lang="es"
+>
+    <Navbar client:only="react" currentPage="404" runtimeLocaleFromPath={true} />
+
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none min-h-[75vh] flex items-center justify-center pt-28 pb-20 md:pt-36 md:pb-28">
+        <div class="max-w-3xl mx-auto px-6 text-center flex flex-col items-center gap-6">
+            
+            {/* ETIQUETA DE ERROR */}
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-main-border/30 bg-surface-soft/60 backdrop-blur-sm text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                <span class="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span>
+                <span id="404-badge-text">{defaultNotFound.badge}</span>
+            </div>
+
+            {/* NÚMERO VISUAL 404 */}
+            <div class="text-7xl sm:text-8xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-primary-text via-primary-text/80 to-secondary-text/40 select-none">
+                404
+            </div>
+
+            {/* ENCABEZADO Y PÁRRAFO */}
+            <div class="flex flex-col gap-3 max-w-xl">
+                <h1 id="404-title" class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-text tracking-tight leading-tight">
+                    {defaultNotFound.title}
+                </h1>
+                <p id="404-desc" class="text-base sm:text-lg text-secondary-text leading-relaxed">
+                    {defaultNotFound.description}
+                </p>
+            </div>
+
+            {/* RUTA SOLICITADA SEGURO */}
+            <div id="404-path-container" class="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2 rounded-xl bg-surface-soft/40 border border-main-border/30 text-xs font-mono text-secondary-text max-w-full overflow-hidden my-1">
+                <span id="404-path-label" class="text-muted-text font-bold">{defaultNotFound.requestedPathLabel}</span>
+                <code id="404-path-value" class="text-accent-cyan break-all max-w-full" style="overflow-wrap: anywhere;">/</code>
+            </div>
+
+            {/* BOTONES DE ACCIÓN */}
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4 w-full sm:w-auto">
+                <a 
+                    id="404-home-btn"
+                    href={defaultNotFound.homeHref} 
+                    class="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-accent-cyan text-base-bg font-semibold text-[15px] inline-flex items-center justify-center gap-2 hover:bg-accent-cyan/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-main-bg shadow-sm"
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span id="404-home-btn-text">{defaultNotFound.homeButton}</span>
+                </a>
+                
+                <a 
+                    id="404-proj-btn"
+                    href={defaultNotFound.projectsHref} 
+                    class="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl border border-main-border/40 bg-surface-base/50 hover:bg-surface-soft text-primary-text font-medium text-[15px] inline-flex items-center justify-center gap-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-main-bg"
+                >
+                    <FolderKanban className="w-4 h-4 text-secondary-text" />
+                    <span id="404-proj-btn-text">{defaultNotFound.projectsButton}</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <Footer lang="es" />
+</Layout>
+
+<script is:inline define:vars={{ notFoundDict, footerDict }}>
+  (function() {
+    function applyNotFoundLocale() {
+      var path = window.location.pathname || '/';
+      var lang = 'es';
+      var htmlLang = 'es';
+
+      if (path.indexOf('/en/') === 0 || path === '/en') {
+        lang = 'en';
+        htmlLang = 'en';
+      } else if (path.indexOf('/fr/') === 0 || path === '/fr') {
+        lang = 'fr';
+        htmlLang = 'fr';
+      } else if (path.indexOf('/pt/') === 0 || path === '/pt') {
+        lang = 'pt';
+        htmlLang = 'pt-BR';
+      } else if (path.indexOf('/zh/') === 0 || path === '/zh') {
+        lang = 'zh-CN';
+        htmlLang = 'zh-CN';
+      }
+
+      document.documentElement.lang = htmlLang;
+
+      // 1. Sincronizar contenido central de 404
+      var data = notFoundDict[lang] || notFoundDict.es;
+      if (data) {
+        document.title = data.metaTitle;
+        
+        var badgeEl = document.getElementById('404-badge-text');
+        var titleEl = document.getElementById('404-title');
+        var descEl = document.getElementById('404-desc');
+        var pathLabelEl = document.getElementById('404-path-label');
+        var pathValueEl = document.getElementById('404-path-value');
+        var homeBtnEl = document.getElementById('404-home-btn');
+        var homeBtnTextEl = document.getElementById('404-home-btn-text');
+        var projBtnEl = document.getElementById('404-proj-btn');
+        var projBtnTextEl = document.getElementById('404-proj-btn-text');
+
+        if (badgeEl) badgeEl.textContent = data.badge;
+        if (titleEl) titleEl.textContent = data.title;
+        if (descEl) descEl.textContent = data.description;
+        if (pathLabelEl) pathLabelEl.textContent = data.requestedPathLabel;
+        if (pathValueEl) pathValueEl.textContent = path;
+        if (homeBtnEl) homeBtnEl.href = data.homeHref;
+        if (homeBtnTextEl) homeBtnTextEl.textContent = data.homeButton;
+        if (projBtnEl) projBtnEl.href = data.projectsHref;
+        if (projBtnTextEl) projBtnTextEl.textContent = data.projectsButton;
+      }
+
+      // 2. Sincronizar Footer dinámicamente en 404
+      var fData = footerDict[lang] || footerDict.es;
+      if (fData) {
+        var roleEl = document.getElementById('footer-role');
+        var rightsEl = document.getElementById('footer-rights');
+        var homeEl = document.getElementById('footer-link-home');
+        var projEl = document.getElementById('footer-link-projects');
+        var contactEl = document.getElementById('footer-link-contact');
+        var linkInEl = document.getElementById('footer-linkedin-aria');
+        var ghEl = document.getElementById('footer-github-aria');
+        var spEl = document.getElementById('footer-spotify-aria');
+
+        if (roleEl) roleEl.textContent = fData.role;
+        if (rightsEl) rightsEl.textContent = fData.rights;
+        if (homeEl) { homeEl.textContent = fData.home; homeEl.href = fData.homeHref; }
+        if (projEl) { projEl.textContent = fData.projects; projEl.href = fData.projectsHref; }
+        if (contactEl) { contactEl.textContent = fData.contact; contactEl.href = fData.contactHref; }
+        if (linkInEl) linkInEl.setAttribute('aria-label', fData.linkedinAria);
+        if (ghEl) ghEl.setAttribute('aria-label', fData.githubAria);
+        if (spEl) spEl.setAttribute('aria-label', fData.spotifyAria);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyNotFoundLocale);
+    } else {
+      applyNotFoundLocale();
+    }
+  })();
+</script>

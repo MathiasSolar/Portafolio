@@ -1,0 +1,758 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../ui/Navbar.jsx';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import Footer from '../ui/Footer.astro';
+import { localizedUrl, getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+import { 
+  Compass, 
+  MapPin, 
+  Sparkles, 
+  Mountain, 
+  Feather, 
+  Gamepad2, 
+  Music, 
+  Globe2, 
+  ArrowRight,
+  Snowflake,
+  Sprout,
+  Sun,
+  Wind,
+  Dumbbell,
+  BookOpen,
+  Trophy,
+  ExternalLink,
+  Coffee,
+  Landmark
+} from 'lucide-react';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+const currentLocale = getSupportedLocale(lang || Astro.params.lang || 'es');
+const tAboutPage = ((translations as any)[currentLocale] || translations.es).aboutPage;
+
+const SEASON_ICONS = [Snowflake, Sprout, Sun, Wind];
+const SEASON_STYLES = [
+  {
+    border: "border-sky-500/20 hover:border-sky-500/40",
+    bg: "bg-sky-500/5 hover:bg-sky-500/10",
+    iconColor: "text-sky-400",
+    accentColor: "text-sky-300/90 font-mono text-[11px] italic"
+  },
+  {
+    border: "border-emerald-500/20 hover:border-emerald-500/40",
+    bg: "bg-emerald-500/5 hover:bg-emerald-500/10",
+    iconColor: "text-emerald-400",
+    accentColor: "text-emerald-300/90 font-mono text-[11px] italic"
+  },
+  {
+    border: "border-amber-500/20 hover:border-amber-500/40",
+    bg: "bg-amber-500/5 hover:bg-amber-500/10",
+    iconColor: "text-amber-400",
+    accentColor: "text-amber-300/90 font-mono text-[11px] italic"
+  },
+  {
+    border: "border-orange-500/20 hover:border-orange-500/40",
+    bg: "bg-orange-500/5 hover:bg-orange-500/10",
+    iconColor: "text-orange-400",
+    accentColor: "text-orange-300/90 font-mono text-[11px] italic"
+  }
+];
+
+const INTEREST_ICONS = [Mountain, Compass, Globe2, Gamepad2, Music, Feather, Dumbbell, BookOpen];
+
+const seasonsData = (tAboutPage.seasons || []).map((s: any, idx: number) => ({
+  ...s,
+  icon: SEASON_ICONS[idx % SEASON_ICONS.length],
+  style: SEASON_STYLES[idx % SEASON_STYLES.length]
+}));
+
+const interestsData = (tAboutPage.interests || []).map((item: any, idx: number) => ({
+  ...item,
+  icon: INTEREST_ICONS[idx % INTEREST_ICONS.length]
+}));
+
+const tPersonal = tAboutPage.personal || {
+  sports: {
+    badge: "PASIÓN POR EL DEPORTE",
+    title: "Rendimiento & Estrategia",
+    lead: "Me atraen las disciplinas donde la estrategia, la preparación, el talento y la capacidad de responder bajo presión pueden cambiar completamente un resultado.",
+    footballTitle: "FÚTBOL",
+    footballTeamsLabel: "Equipos",
+    mmaTitle: "MMA / UFC",
+    mmaRefLabel: "Referencia",
+    mmaRef: "Peleadores del Cáucaso",
+    racingTitle: "AUTOMOVILISMO",
+    racingTeamLabel: "Equipo"
+  },
+  lol: {
+    badge: "COMPETENCIA Y ESTRATEGIA · LEAGUE OF LEGENDS / AZIR",
+    title: "Control territorial y exigencia mecánica",
+    lead: "League of Legends ha sido uno de mis principales espacios competitivos. Azir es mi campeón principal y el personaje con el que más he desarrollado mi estilo de juego. La exigencia mecánica, la toma de decisiones y el control estratégico que requiere representan gran parte de lo que disfruto de la competencia.",
+    mainChampDesc: "Campeón principal",
+    globalRankLabel: "#13 MUNDIAL",
+    globalRankDesc: "Mejor posición alcanzada",
+    masterRankLabel: "MASTER · 200 LP",
+    masterRankDesc: "Nivel competitivo sostenido",
+    lasRankLabel: "#1 LAS",
+    lasRankDesc: "Servidor latinoamericano sur"
+  },
+  rituals: {
+    badge: "RITUALES COTIDIANOS",
+    title: "Momentos & Pausas",
+    lead: "Algunas bebidas también acompañan distintos momentos de conversación, concentración y descanso.",
+    mateTitle: "MATE",
+    mateDesc: "Pausa, conversación y calma.",
+    coffeeTitle: "CAFÉ",
+    coffeeDesc: "Rutina y concentración.",
+    redbullTitle: "RED BULL",
+    redbullDesc: "Una bebida que disfruto ocasionalmente por su sabor y energía."
+  },
+  travel: {
+    badge: "UN MUNDO POR RECORRER",
+    title: "Historia, culturas y nuevos horizontes",
+    lead: "Me gustaría recorrer distintos países para conocer su historia, comprender otras culturas y descubrir su gastronomía. Viajar representa una forma de ampliar la perspectiva y aprender directamente de otros territorios y formas de vida.",
+    tags: "Historia · Culturas · Gastronomía · Arquitectura · Territorios · Paisajes",
+    coords: "45°34′S 72°04′O",
+    mapLinkText: "MAPA ABIERTO"
+  }
+};
+
+const tMusic = tAboutPage.music || {
+  badge: "MÚSICA & ESTADOS",
+  title: "La música que acompaña mis momentos",
+  lead: "No escucho siempre lo mismo. Cada playlist acompaña una forma distinta de concentrarme, liberar tensión, disfrutar o recuperar energía.",
+  featuredBadge: "PLAYLIST DESTACADA",
+  listenButton: "Escuchar en Spotify",
+  listenAria: "Escuchar la playlist {name} en Spotify",
+  oliseCategory: "RAP & TRAP FRANCÉS",
+  oliseTitle: "Michael Olise",
+  oliseDesc: "Michael Olise es mi jugador favorito y, a través de esa admiración, nació también mi interés por el rap y el trap francés.",
+  chillCategory: "CALMA & CLARIDAD",
+  chillTitle: "Chill",
+  chillDesc: "Una selección para liberar tensión y recuperar claridad mental. Predominan la música clásica, los sonidos naturales, las aves y los ambientes tranquilos.",
+  vibeCategory: "BUEN ÁNIMO",
+  vibeTitle: "Vibe",
+  vibeDesc: "Música actual, generalmente alegre, para levantar el ánimo, disfrutar el momento y pasar un buen rato.",
+  madnessCategory: "INTENSIDAD & TRYHARD",
+  madnessTitle: "Madness",
+  madnessDesc: "Frenchcore para sesiones intensas, momentos de tryhard y situaciones en las que necesito mantener el cerebro al máximo.",
+  rageCategory: "ROCK & METAL",
+  rageTitle: "Rage",
+  rageDesc: "Metal y rock para activar la energía, encender el ánimo y acompañar momentos más casuales o intensos."
+};
+
+const PLAYLIST_LINKS = {
+  vibe: 'https://open.spotify.com/playlist/2jBaDd1Z4vbBn1F9xuPiIe?si=z-gJRmxRRp-5_mwCg0E3Uw',
+  michaelOlise: 'https://open.spotify.com/playlist/52q5fB4UxVFDbn77D2mghe?si=PaTg8TiCT3qXly6I3DPltw',
+  madness: 'https://open.spotify.com/playlist/1KRplCf7GsnOW3IPyu7kVg?si=WUZtdE6CTp2fY_kpIK7azA',
+  rage: 'https://open.spotify.com/playlist/5OKF0K0rlA40bkhvhtrtNn?si=Tkg1gOUdQRmIq7O-C3xeuw',
+  chill: 'https://open.spotify.com/playlist/0tNcw81slU5TumyQMLzyRB?si=6Wphi7fAT6-pCMYg8esrIQ'
+};
+
+const getPlaylistAria = (name: string) => {
+  const template = tMusic.listenAria || "Escuchar la playlist {name} en Spotify";
+  return template.replace('{name}', name);
+};
+---
+
+<Layout 
+    title={tAboutPage.metaTitle || "Sobre mí | Mathias Solar"}
+    description={tAboutPage.metaDesc || "Conoce los intereses, trayectoria, motivación y entorno que moldean la perspectiva de ingeniería de software de Mathias Solar."}
+    lang={currentLocale}
+>
+    <Navbar client:load currentPage="about" currentLocale={currentLocale} />
+
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none pt-28 pb-20 md:pt-32 md:pb-24">
+        {/* BREADCRUMBS VISIBLES */}
+        <Breadcrumbs lang={currentLocale} items={[{ label: 'Inicio', href: '/' }, { label: tAboutPage.title || 'Sobre mí' }]} />
+
+        <div class="max-w-7xl mx-auto px-6 flex flex-col gap-14 md:gap-20">
+            
+            {/* ENCABEZADO PRINCIPAL DE LA PÁGINA */}
+            <div class="flex flex-col gap-3 text-center md:text-left">
+                <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                    {tAboutPage.badge || "MÁS ALLÁ DEL CÓDIGO"}
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-text tracking-tight leading-tight">
+                    {tAboutPage.title || "Sobre mí"}
+                </h1>
+                <p class="text-lg md:text-xl text-secondary-text max-w-3xl leading-relaxed mt-1">
+                    {tAboutPage.lead}
+                </p>
+            </div>
+
+            {/* PRIMERA CUADRÍCULA: PRESENTACIÓN CON UBICACIÓN (IZQ) Y PERFIL PATAGÓNICO GRÁFICO (DER) */}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                {/* TARJETA IZQUIERDA: PRESENTACIÓN CON UBICACIÓN */}
+                <div class="lg:col-span-7 p-6 md:p-8 rounded-xl bg-surface-soft/30 border border-main-border/10 flex flex-col justify-between gap-6">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
+                            <MapPin className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            <span>{tAboutPage.locationBadge || "COYHAIQUE, REGIÓN DE AYSÉN · CHILE"}</span>
+                        </div>
+
+                        <div class="flex flex-col gap-4 text-base md:text-lg text-secondary-text leading-relaxed">
+                            <p class="font-medium text-primary-text">{tAboutPage.mainPara1}</p>
+                            <p class="text-sm md:text-base">{tAboutPage.mainPara2}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-4 border-t border-main-border/10 text-xs font-mono text-secondary-text">
+                        <span>{tAboutPage.coordsLabel || "Coordenadas:"} <strong class="text-primary-text font-mono">45°34′S 72°04′O</strong></span>
+                        <span class="text-muted-text mx-1">·</span>
+                        <span>{tAboutPage.zoneLabel || "Zona:"} <strong class="text-primary-text">{tAboutPage.zoneValue || "Patagonia Chilena"}</strong></span>
+                    </div>
+                </div>
+
+                {/* TARJETA DERECHA: PERFIL PATAGÓNICO GRÁFICO */}
+                <div class="lg:col-span-5 p-6 md:p-8 rounded-xl bg-surface-soft/30 border border-main-border/10 flex flex-col justify-between gap-6">
+                    {/* CABECERA */}
+                    <div class="flex items-center justify-between text-xs font-mono uppercase tracking-wider">
+                        <span class="text-accent-cyan font-bold">{tAboutPage.profileBadge || "PERFIL PATAGÓNICO"}</span>
+                        <span class="text-muted-text">{tAboutPage.altitudeLabel || "ALTITUD: 210M"}</span>
+                    </div>
+
+                    {/* CENTRO: VISUALIZACIÓN GRÁFICA DE PERFIL MONTAÑOSO */}
+                    <div class="my-auto py-3 flex flex-col justify-center items-center w-full">
+                        <svg viewBox="0 0 400 120" class="w-full h-24 overflow-visible" preserveAspectRatio="none">
+                            <line x1="0" y1="90" x2="400" y2="90" stroke="currentColor" stroke-dasharray="4 4" class="text-main-border/20" stroke-width="1" />
+                            <path d="M 0 90 Q 50 80, 100 65 T 200 75 T 300 50 T 400 85" fill="none" stroke="currentColor" class="text-accent-cyan/30" stroke-width="1.5" stroke-dasharray="3 3" />
+                            <path d="M 0 95 L 40 85 L 80 60 L 120 78 L 170 35 L 210 65 L 260 25 L 310 70 L 360 45 L 400 90" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M 0 95 L 40 85 L 80 60 L 120 78 L 170 35 L 210 65 L 260 25 L 310 70 L 360 45 L 400 90 L 400 120 L 0 120 Z" fill="url(#patagonia-gradient)" opacity="0.15" />
+                            <defs>
+                                <linearGradient id="patagonia-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.8" />
+                                    <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="80" cy="60" r="3" fill="#10b981" />
+                            <circle cx="170" cy="35" r="3.5" fill="#10b981" />
+                            <circle cx="260" cy="25" r="4" fill="#34d399" />
+                            <circle cx="360" cy="45" r="3" fill="#10b981" />
+                        </svg>
+                    </div>
+
+                    {/* PIE */}
+                    <div class="flex items-center justify-between text-xs font-mono text-muted-text uppercase tracking-wider pt-3 border-t border-main-border/10">
+                        <span class="text-secondary-text font-bold">AYSÉN · CHILE</span>
+                        <span>{tAboutPage.officialTimeLabel || "HORA OFICIAL: UTC-3"}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* SEGUNDA SECCIÓN: DESDE AYSÉN (IZQUIERDA) & ESTACIONES 2X2 (DERECHA) */}
+            <div class="flex flex-col gap-6 pt-2">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tAboutPage.fromAysenLabel || "DESDE AYSÉN"}
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-main-border/20"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* COLUMNA IZQUIERDA: ENTORNO, TERRITORIO Y TEMPLANZA (50% DESKTOP) */}
+                    <div class="lg:col-span-6 flex flex-col gap-3">
+                        <h3 class="text-2xl font-bold text-primary-text">{tAboutPage.fromAysenTitle || "Entorno, territorio y templanza"}</h3>
+                        <p class="text-sm md:text-base text-secondary-text leading-relaxed">
+                            {tAboutPage.fromAysenDesc}
+                        </p>
+                    </div>
+
+                    {/* COLUMNA DERECHA: ESTACIONES & AMBIENTES EN GRILLA 2X2 (50% DESKTOP) */}
+                    <div class="lg:col-span-6 flex flex-col gap-4">
+                        <div class="flex flex-col gap-1">
+                            <h4 class="text-xs font-mono uppercase tracking-wider text-accent-cyan font-bold">
+                                {tAboutPage.seasonsBadge || "ESTACIONES & AMBIENTES"}
+                            </h4>
+                            <p class="text-xs text-secondary-text">
+                                {tAboutPage.seasonsSubdesc || "Cada estación cambia la forma de habitar y observar el entorno austral."}
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            {seasonsData.map((s: any) => {
+                                const Icon = s.icon;
+                                return (
+                                    <div class={`p-4 rounded-xl border ${s.style.border} ${s.style.bg} flex flex-col justify-between gap-3 transition-colors`}>
+                                        <div class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <h5 class="text-sm font-bold text-primary-text">{s.name}</h5>
+                                                <Icon className={`w-4 h-4 ${s.style.iconColor}`} aria-hidden="true" />
+                                            </div>
+                                            <p class="text-xs text-secondary-text leading-relaxed">
+                                                {s.desc}
+                                            </p>
+                                        </div>
+
+                                        <div class="pt-2.5 border-t border-main-border/10">
+                                            <p class={s.style.accentColor}>
+                                                {s.meaning}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* SECCIÓN 3: INTERESES & EXPLORACIÓN */}
+            <div class="flex flex-col gap-6 pt-2">
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tAboutPage.interestsLabel || "Intereses & Exploración"}
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {interestsData.map((item: any) => (
+                        <div class="p-5 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col gap-3 hover:bg-surface-soft/50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="w-8 h-8 rounded-lg bg-accent-cyan/10 border border-accent-cyan/20 flex items-center justify-center text-accent-cyan">
+                                    <item.icon className="w-4 h-4" aria-hidden="true" />
+                                </div>
+                                <span class="text-xs font-mono text-accent-cyan font-bold">{item.num}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <h3 class="text-sm font-bold text-primary-text">{item.title}</h3>
+                                <p class="text-xs text-secondary-text leading-relaxed">{item.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* SECCIÓN 4: BLOQUE PERSONAL 2 X 2 (DEPORTES, AZIR, RITUALES, VIAJES) */}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                
+                {/* FILA SUPERIOR - IZQUIERDA: RENDIMIENTO & ESTRATEGIA (DEPORTES) */}
+                <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-6">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
+                            <Trophy className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            <span>{tPersonal.sports?.badge || "PASIÓN POR EL DEPORTE"}</span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-2xl font-bold text-primary-text">{tPersonal.sports?.title || "Rendimiento & Estrategia"}</h3>
+                            <p class="text-sm text-secondary-text leading-relaxed">
+                                {tPersonal.sports?.lead || "Me atraen las disciplinas donde la estrategia, la preparación, el talento y la capacidad de responder bajo presión pueden cambiar completamente un resultado."}
+                            </p>
+                        </div>
+
+                        <div class="h-[1px] w-full bg-main-border/10 my-1"></div>
+
+                        {/* SUBSECCIONES VERTICALES DE DEPORTES */}
+                        <div class="flex flex-col gap-4">
+                            {/* FÚTBOL */}
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">{tPersonal.sports?.footballTitle || "FÚTBOL"}</span>
+                                <p class="text-xs text-secondary-text"><strong class="text-primary-text">{tPersonal.sports?.footballTeamsLabel || "Equipos"}:</strong> Bayern München · Colo-Colo</p>
+                            </div>
+
+                            {/* MMA / UFC */}
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">{tPersonal.sports?.mmaTitle || "MMA / UFC"}</span>
+                                <p class="text-xs text-secondary-text"><strong class="text-primary-text">{tPersonal.sports?.mmaRefLabel || "Referencia"}:</strong> {tPersonal.sports?.mmaRef || "Peleadores del Cáucaso"}</p>
+                            </div>
+
+                            {/* AUTOMOVILISMO */}
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">{tPersonal.sports?.racingTitle || "AUTOMOVILISMO"}</span>
+                                <p class="text-xs text-secondary-text"><strong class="text-primary-text">{tPersonal.sports?.racingTeamLabel || "Equipo"}:</strong> Red Bull Racing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* FILA SUPERIOR - DERECHA: CONTROL TERRITORIAL Y EXIGENCIA MECÁNICA (AZIR) */}
+                <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-6">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">
+                            <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            <span>{tPersonal.lol?.badge || "COMPETENCIA Y ESTRATEGIA · LEAGUE OF LEGENDS / AZIR"}</span>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-2xl font-bold text-primary-text">{tPersonal.lol?.title || "Control territorial y exigencia mecánica"}</h3>
+                            <p class="text-sm text-secondary-text leading-relaxed">
+                                {tPersonal.lol?.lead || "League of Legends ha sido uno de mis principales espacios competitivos. Azir es mi campeón principal y el personaje con el que más he desarrollado mi estilo de juego. La exigencia mecánica, la toma de decisiones y el control estratégico que requiere representan gran parte de lo que disfruto de la competencia."}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* 5 MÉTRICAS HORIZONTALES DISTRIBUIDAS */}
+                    <div class="pt-4 border-t border-main-border/10">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-mono font-bold text-amber-400">AZIR</span>
+                                <span class="text-[11px] text-muted-text">{tPersonal.lol?.mainChampDesc || "Campeón principal"}</span>
+                            </div>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-mono font-bold text-amber-400">TAGS</span>
+                                <span class="text-[10.5px] text-muted-text font-mono">solar#azir<br/>azirdelcolo#colo</span>
+                            </div>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-mono font-bold text-amber-400">{tPersonal.lol?.globalRankLabel || "#13 MUNDIAL"}</span>
+                                <span class="text-[11px] text-muted-text">{tPersonal.lol?.globalRankDesc || "Mejor posición alcanzada"}</span>
+                            </div>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-mono font-bold text-amber-400">{tPersonal.lol?.masterRankLabel || "MASTER · 200 LP"}</span>
+                                <span class="text-[11px] text-muted-text">{tPersonal.lol?.masterRankDesc || "Nivel competitivo sostenido"}</span>
+                            </div>
+                            <div class="flex flex-col gap-0.5">
+                                <span class="text-xs font-mono font-bold text-amber-400">{tPersonal.lol?.lasRankLabel || "#1 LAS"}</span>
+                                <span class="text-[11px] text-muted-text">{tPersonal.lol?.lasRankDesc || "Servidor latinoamericano sur"}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* FILA INFERIOR - IZQUIERDA: MOMENTOS & PAUSAS (RITUALES) */}
+                <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-6">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
+                            <Coffee className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            <span>{tPersonal.rituals?.badge || "RITUALES COTIDIANOS"}</span>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-2xl font-bold text-primary-text">{tPersonal.rituals?.title || "Momentos & Pausas"}</h3>
+                            <p class="text-sm text-secondary-text leading-relaxed">
+                                {tPersonal.rituals?.lead || "Algunas bebidas también acompañan distintos momentos de conversación, concentración y descanso."}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-main-border/10">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-mono font-bold text-emerald-400 uppercase">{tPersonal.rituals?.mateTitle || "MATE"}</span>
+                                <span class="text-xs text-secondary-text leading-snug">{tPersonal.rituals?.mateDesc || "Pausa, conversación y calma."}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-mono font-bold text-amber-400 uppercase">{tPersonal.rituals?.coffeeTitle || "CAFÉ"}</span>
+                                <span class="text-xs text-secondary-text leading-snug">{tPersonal.rituals?.coffeeDesc || "Rutina y concentración."}</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-mono font-bold text-accent-cyan uppercase">{tPersonal.rituals?.redbullTitle || "RED BULL"}</span>
+                                <span class="text-xs text-secondary-text leading-snug">{tPersonal.rituals?.redbullDesc || "Una bebida que disfruto ocasionalmente por su sabor y energía."}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* FILA INFERIOR - DERECHA: HISTORIA, CULTURAS Y NUEVOS HORIZONTES (VIAJES) */}
+                <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-6">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">
+                            <Landmark className="w-4 h-4 shrink-0" aria-hidden="true" />
+                            <span>{tPersonal.travel?.badge || "UN MUNDO POR RECORRER"}</span>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <h3 class="text-2xl font-bold text-primary-text">{tPersonal.travel?.title || "Historia, culturas y nuevos horizontes"}</h3>
+                            <p class="text-sm text-secondary-text leading-relaxed">
+                                {tPersonal.travel?.lead || "Me gustaría recorrer distintos países para conocer su historia, comprender otras culturas y descubrir su gastronomía. Viajar representa una forma de ampliar la perspectiva y aprender directamente de otros territorios y formas de vida."}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-main-border/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
+                        <span class="text-secondary-text">
+                            {tPersonal.travel?.tags || "Historia · Culturas · Gastronomía · Arquitectura · Territorios · Paisajes"}
+                        </span>
+                        <a 
+                            href="https://www.google.com/maps?q=-45.57,-72.07" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-1.5 text-accent-cyan font-bold hover:underline shrink-0"
+                            aria-label="Abrir mapa de coordenadas 45°34′S 72°04′O"
+                        >
+                            <span>{tPersonal.travel?.coords || "45°34′S 72°04′O"} → {tPersonal.travel?.mapLinkText || "MAPA ABIERTO"}</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* SECCIÓN MÚSICA & ESTADOS (IMAGEN B) */}
+            <div class="flex flex-col gap-6 pt-4">
+                {/* ENCABEZADO DE SECCIÓN */}
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tMusic.badge || "MÚSICA & ESTADOS"}
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-primary-text tracking-tight">
+                        {tMusic.title || "La música que acompaña mis momentos"}
+                    </h2>
+                    <p class="text-sm md:text-base text-secondary-text max-w-3xl leading-relaxed">
+                        {tMusic.lead || "No escucho siempre lo mismo. Cada playlist acompaña una forma distinta de concentrarme, liberar tensión, disfrutar o recuperar energía."}
+                    </p>
+                </div>
+
+                {/* PLAYLIST DESTACADA — VIBE (TARJETA ANCHA SUPERIOR) */}
+                <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col sm:flex-row items-stretch gap-6 md:gap-8">
+                    {/* CARÁTULA VISUAL IZQUIERDA */}
+                    <div class="w-full sm:w-64 h-36 sm:h-auto rounded-lg bg-gradient-to-br from-amber-950 via-slate-900 to-orange-950 border border-amber-500/20 p-5 flex flex-col justify-between shrink-0 relative overflow-hidden group">
+                        {/* PATRÓN GRÁFICO RECTÁNGULOS Y PUNTOS */}
+                        <div class="absolute inset-0 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none"></div>
+                        <div class="absolute top-4 right-4 flex items-center gap-1.5 opacity-60">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        </div>
+
+                        <div class="z-10 flex flex-col gap-1">
+                            <span class="text-[10px] font-mono font-bold tracking-widest text-amber-400 uppercase">
+                                {tMusic.vibeCategory || "BUEN ÁNIMO"}
+                            </span>
+                            <div class="w-8 h-0.5 bg-amber-500/40 my-1"></div>
+                            <div class="w-12 h-0.5 bg-amber-500/20"></div>
+                        </div>
+
+                        <div class="z-10 pt-4">
+                            <span class="text-xl font-extrabold text-white tracking-tight leading-tight block">
+                                {tMusic.vibeTitle || "Vibe"}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* DETALLES Y ENLACE DERECHA */}
+                    <div class="flex flex-col justify-between gap-4 flex-grow">
+                        <div class="flex flex-col gap-3">
+                            <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+                                <span class="text-emerald-400 font-bold tracking-wider uppercase">
+                                    {tMusic.featuredBadge || "PLAYLIST DESTACADA"}
+                                </span>
+                                <span class="text-muted-text">·</span>
+                                <span class="text-secondary-text uppercase tracking-wider">
+                                    {tMusic.vibeCategory || "BUEN ÁNIMO"}
+                                </span>
+                            </div>
+
+                            <h3 class="text-2xl md:text-3xl font-bold text-primary-text">
+                                {tMusic.vibeTitle || "Vibe"}
+                            </h3>
+
+                            <p class="text-sm md:text-base text-secondary-text leading-relaxed">
+                                {tMusic.vibeDesc || "Música actual, generalmente alegre, para levantar el ánimo, disfrutar el momento y pasar un buen rato."}
+                            </p>
+                        </div>
+
+                        <div class="pt-2">
+                            <a 
+                                href={PLAYLIST_LINKS.vibe} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-400 hover:text-emerald-300 transition-colors group focus-visible:outline-none focus-visible:underline"
+                                aria-label={getPlaylistAria(tMusic.vibeTitle || "Vibe")}
+                            >
+                                <span class="font-mono text-xs">←</span>
+                                <span>{tMusic.listenButton || "Escuchar en Spotify"}</span>
+                                <span class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {/* CUADRÍCULA INFERIOR 2 X 2 (CHILL, MICHAEL OLISE, MADNESS, RAGE) */}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* TARJETA 1: CHILL (FILA 1, IZQUIERDA) */}
+                    <div class="p-6 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-5">
+                        <div class="flex items-start gap-4">
+                            {/* MINI CARÁTULA CIAN */}
+                            <div class="w-14 h-14 rounded-lg bg-cyan-950/70 border border-cyan-500/30 flex flex-col items-center justify-between p-2 shrink-0">
+                                <span class="text-[9px] font-mono font-bold text-cyan-400 tracking-wider">CHILL</span>
+                                <div class="flex items-end justify-center gap-0.5 h-4 w-full">
+                                    <span class="w-1 bg-cyan-400 h-2.5 rounded-full"></span>
+                                    <span class="w-1 bg-cyan-400 h-4 rounded-full"></span>
+                                    <span class="w-1 bg-cyan-400 h-1.5 rounded-full"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+                                    {tMusic.chillCategory || "CALMA & CLARIDAD"}
+                                </span>
+                                <h3 class="text-xl font-bold text-primary-text">
+                                    {tMusic.chillTitle || "Chill"}
+                                </h3>
+                                <p class="text-xs md:text-sm text-secondary-text leading-relaxed">
+                                    {tMusic.chillDesc || "Una selección para liberar tensión y recuperar claridad mental. Predominan la música clásica, los sonidos naturales, las aves y los ambientes tranquilos."}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-main-border/10">
+                            <a 
+                                href={PLAYLIST_LINKS.chill} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors group focus-visible:outline-none focus-visible:underline"
+                                aria-label={getPlaylistAria(tMusic.chillTitle || "Chill")}
+                            >
+                                <span class="font-mono text-xs">←</span>
+                                <span>{tMusic.listenButton || "Escuchar en Spotify"}</span>
+                                <span class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* TARJETA 2: MICHAEL OLISE (FILA 1, DERECHA) */}
+                    <div class="p-6 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-5">
+                        <div class="flex items-start gap-4">
+                            {/* MINI CARÁTULA ÍNDIGO/AZUL */}
+                            <div class="w-14 h-14 rounded-lg bg-indigo-950/70 border border-indigo-500/30 flex flex-col items-center justify-between p-2 shrink-0">
+                                <span class="text-[8px] font-mono font-bold text-indigo-400 tracking-wider uppercase">OLISE</span>
+                                <div class="flex items-end justify-center gap-0.5 h-4 w-full">
+                                    <span class="w-1 bg-indigo-400 h-3 rounded-full"></span>
+                                    <span class="w-1 bg-indigo-400 h-4 rounded-full"></span>
+                                    <span class="w-1 bg-indigo-400 h-2 rounded-full"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider">
+                                    {tMusic.oliseCategory || "RAP & TRAP FRANCÉS"}
+                                </span>
+                                <h3 class="text-xl font-bold text-primary-text">
+                                    {tMusic.oliseTitle || "Michael Olise"}
+                                </h3>
+                                <p class="text-xs md:text-sm text-secondary-text leading-relaxed">
+                                    {tMusic.oliseDesc || "Michael Olise es mi jugador favorito y, a través de esa admiración, nació también mi interés por el rap y el trap francés."}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-main-border/10">
+                            <a 
+                                href={PLAYLIST_LINKS.michaelOlise} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors group focus-visible:outline-none focus-visible:underline"
+                                aria-label={getPlaylistAria(tMusic.oliseTitle || "Michael Olise")}
+                            >
+                                <span class="font-mono text-xs">←</span>
+                                <span>{tMusic.listenButton || "Escuchar en Spotify"}</span>
+                                <span class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* TARJETA 3: MADNESS (FILA 2, IZQUIERDA) */}
+                    <div class="p-6 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-5">
+                        <div class="flex items-start gap-4">
+                            {/* MINI CARÁTULA ROSA/MAGENTA */}
+                            <div class="w-14 h-14 rounded-lg bg-pink-950/70 border border-pink-500/30 flex flex-col items-center justify-between p-2 shrink-0">
+                                <span class="text-[8px] font-mono font-bold text-pink-400 tracking-wider">MADNESS</span>
+                                <div class="flex items-end justify-center gap-0.5 h-4 w-full">
+                                    <span class="w-1 bg-pink-400 h-3 rounded-full"></span>
+                                    <span class="w-1 bg-pink-400 h-4 rounded-full"></span>
+                                    <span class="w-1 bg-pink-400 h-2 rounded-full"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-pink-400 uppercase tracking-wider">
+                                    {tMusic.madnessCategory || "INTENSIDAD & TRYHARD"}
+                                </span>
+                                <h3 class="text-xl font-bold text-primary-text">
+                                    {tMusic.madnessTitle || "Madness"}
+                                </h3>
+                                <p class="text-xs md:text-sm text-secondary-text leading-relaxed">
+                                    {tMusic.madnessDesc || "Frenchcore para sesiones intensas, momentos de tryhard y situaciones en las que necesito mantener el cerebro al máximo."}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-main-border/10">
+                            <a 
+                                href={PLAYLIST_LINKS.madness} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors group focus-visible:outline-none focus-visible:underline"
+                                aria-label={getPlaylistAria(tMusic.madnessTitle || "Madness")}
+                            >
+                                <span class="font-mono text-xs">←</span>
+                                <span>{tMusic.listenButton || "Escuchar en Spotify"}</span>
+                                <span class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* TARJETA 4: RAGE (FILA 2, DERECHA) */}
+                    <div class="p-6 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col justify-between gap-5">
+                        <div class="flex items-start gap-4">
+                            {/* MINI CARÁTULA GRIS/METAL */}
+                            <div class="w-14 h-14 rounded-lg bg-slate-800/80 border border-slate-600/40 flex flex-col items-center justify-between p-2 shrink-0">
+                                <span class="text-[9px] font-mono font-bold text-slate-300 tracking-wider">RAGE</span>
+                                <div class="flex items-end justify-center gap-0.5 h-4 w-full">
+                                    <span class="w-1 bg-slate-300 h-2 rounded-full"></span>
+                                    <span class="w-1 bg-slate-300 h-4 rounded-full"></span>
+                                    <span class="w-1 bg-slate-300 h-3 rounded-full"></span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1.5">
+                                <span class="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+                                    {tMusic.rageCategory || "ROCK & METAL"}
+                                </span>
+                                <h3 class="text-xl font-bold text-primary-text">
+                                    {tMusic.rageTitle || "Rage"}
+                                </h3>
+                                <p class="text-xs md:text-sm text-secondary-text leading-relaxed">
+                                    {tMusic.rageDesc || "Metal y rock para activar la energía, encender el ánimo y acompañar momentos más casuales o intensos."}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-main-border/10">
+                            <a 
+                                href={PLAYLIST_LINKS.rage} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors group focus-visible:outline-none focus-visible:underline"
+                                aria-label={getPlaylistAria(tMusic.rageTitle || "Rage")}
+                            >
+                                <span class="font-mono text-xs">←</span>
+                                <span>{tMusic.listenButton || "Escuchar en Spotify"}</span>
+                                <span class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* SECCIÓN FINAL: CIERRE EDITORIAL Y ENLACE A CAPACIDADES */}
+            <div class="p-6 md:p-8 rounded-xl border border-main-border/10 bg-surface-soft/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <p class="text-base text-secondary-text max-w-2xl leading-relaxed">
+                    {tAboutPage.ctaText}
+                </p>
+                <a 
+                    href={localizedUrl('/capacidades', currentLocale)} 
+                    class="inline-flex items-center gap-2 text-sm font-bold text-accent-cyan hover:text-accent-cyan/80 transition-colors shrink-0 focus-visible:outline-none focus-visible:underline"
+                >
+                    {tAboutPage.ctaButton || "Ver capacidades y herramientas"} <ArrowRight className="w-4 h-4" />
+                </a>
+            </div>
+
+            {/* BOTÓN REGRESO A INICIO */}
+            <div class="flex justify-center md:justify-start pt-2">
+                <a href={localizedUrl('/', currentLocale)} class="inline-flex items-center gap-2 text-sm font-bold text-primary-text hover:text-accent-cyan transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 rounded">
+                    <svg class="w-4 h-4 rotate-180 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    {tAboutPage.backHome || "Volver al inicio"}
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <Footer lang={currentLocale} />
+</Layout>

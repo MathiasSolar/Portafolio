@@ -1,0 +1,635 @@
+---
+import { ZoomIn, ZoomOut, RotateCcw, X, Download, ExternalLink, FileText } from 'lucide-react';
+import { getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+const currentLocale = getSupportedLocale(lang);
+const tDocViewer = ((translations as any)[currentLocale] || translations.es).documentViewer;
+---
+
+<dialog 
+    id="doc-viewer-dialog" 
+    aria-labelledby="doc-panel-title"
+    data-lang={currentLocale}
+    data-spanish-note={tDocViewer.spanishNote || ''}
+    data-cv-category={tDocViewer.cvCategory || 'CURRÍCULUM VITAE'}
+    data-cv-title={tDocViewer.cvTitle || 'Currículum — Mathias Solar'}
+    data-cv-desc={tDocViewer.cvDesc || 'Ingeniero en Informática con experiencia en desarrollo web, plataformas digitales y transformación institucional.'}
+    data-cert-disclaimer={tDocViewer.certDisclaimer || 'Vista previa del certificado. Los datos de verificación han sido protegidos.'}
+    data-download-cv={tDocViewer.downloadCv || 'Descargar CV'}
+    data-download-doc={tDocViewer.downloadDoc || 'Descargar'}
+    class="fixed inset-0 m-auto w-full h-full lg:w-[96vw] lg:max-w-[1500px] lg:h-[94vh] lg:max-h-[94vh] p-0 lg:p-3 lg:rounded-2xl bg-surface-base border-0 lg:border lg:border-main-border/40 shadow-2xl text-primary-text backdrop:bg-black/80 backdrop:backdrop-blur-sm overflow-hidden outline-none"
+>
+    <div class="relative flex flex-col h-full w-full select-none">
+        
+        {/* BOTÓN X DISCRETO (VISIBLE EN ESCRITORIO EN ESQUINA SUPERIOR DERECHA) */}
+        <button 
+            id="doc-modal-close-x"
+            type="button"
+            aria-label={tDocViewer.closeAria || "Cerrar visor de documento"}
+            class="hidden lg:flex absolute top-2 right-2 z-50 p-2 rounded-xl bg-surface-base/90 hover:bg-surface-soft text-secondary-text hover:text-primary-text border border-main-border/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan shadow-sm"
+        >
+            <X className="w-5 h-5" />
+        </button>
+
+        {/* ========================================================================= */}
+        {/* VISTA ESCRITORIO (>= 1024px): COMPOSICIÓN 70/30 PARALELA INTACTA */}
+        {/* ========================================================================= */}
+        <div class="hidden lg:grid grid-cols-[minmax(0,7fr)_minmax(260px,3fr)] gap-4 h-full w-full overflow-hidden">
+            
+            {/* COLUMNA IZQUIERDA (~70%): ÁREA DEL DOCUMENTO */}
+            <div class="flex-grow h-full w-full overflow-hidden rounded-xl bg-black/50 border border-main-border/30 shadow-inner relative flex flex-col justify-center items-center">
+                
+                {/* MODO PDF EN ESCRITORIO (CURRÍCULUM) */}
+                <object
+                    id="doc-desktop-object"
+                    data="/documentos/cv/mathias-solar-cv.pdf"
+                    type="application/pdf"
+                    title={tDocViewer.cvTitle || "Currículum — Mathias Solar"}
+                    class="w-full h-full min-h-[500px] rounded-xl bg-surface-base"
+                >
+                    <div class="flex flex-col items-center justify-center h-full p-6 text-center gap-4 bg-surface-soft/40 rounded-xl border border-main-border/20">
+                        <FileText className="w-10 h-10 text-accent-cyan opacity-80" />
+                        <p class="text-sm text-secondary-text max-w-sm leading-relaxed">
+                            {tDocViewer.pdfFallback || "Tu navegador no puede mostrar esta vista previa. Puedes abrir o descargar el currículum mediante los botones disponibles."}
+                        </p>
+                    </div>
+                </object>
+
+                {/* MODO IMAGEN EN ESCRITORIO (CERTIFICADOS WEBP) */}
+                <div 
+                    id="doc-desktop-img-container"
+                    class="hidden w-full h-full overflow-auto overscroll-contain p-4 flex items-start justify-center"
+                >
+                    <div class="w-full h-full flex items-center justify-center min-h-[300px]">
+                        <img 
+                            id="doc-desktop-img" 
+                            src="" 
+                            alt="" 
+                            decoding="async" 
+                            loading="lazy"
+                            class="h-auto object-contain transition-all duration-200 select-none rounded-lg shadow-2xl origin-top"
+                        />
+                    </div>
+                </div>
+
+            </div>
+
+            {/* COLUMNA DERECHA (~30%): PANEL LATERAL DE INFORMACIÓN Y ACCIONES */}
+            <div class="flex flex-col justify-between gap-4 p-6 bg-surface-soft/30 border border-main-border/30 rounded-xl overflow-y-auto h-full">
+                
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <span id="doc-desktop-category" class="text-[11px] font-mono font-bold text-accent-cyan tracking-widest uppercase">
+                            {tDocViewer.cvCategory || "CURRÍCULUM VITAE"}
+                        </span>
+                        <h3 id="doc-desktop-title" class="text-xl font-bold text-primary-text leading-snug">
+                            {tDocViewer.cvTitle || "Currículum — Mathias Solar"}
+                        </h3>
+                        <h4 id="doc-desktop-institution" class="hidden text-sm font-semibold text-secondary-text/90 mt-0.5">
+                        </h4>
+                    </div>
+
+                    <div id="doc-desktop-cert-meta" class="hidden flex flex-wrap gap-2 text-xs font-mono">
+                        <span id="doc-desktop-meta-year" class="bg-surface-soft border border-main-border/30 px-2.5 py-1 rounded-md text-secondary-text">
+                        </span>
+                        <span id="doc-desktop-meta-duration" class="hidden bg-accent-cyan/10 border border-accent-cyan/20 px-2.5 py-1 rounded-md text-accent-cyan">
+                        </span>
+                        <span id="doc-desktop-meta-score" class="hidden bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-md text-emerald-300">
+                        </span>
+                    </div>
+
+                    <p id="doc-desktop-desc" class="text-sm text-secondary-text/80 leading-relaxed">
+                        {tDocViewer.cvDesc || "Ingeniero en Informática con experiencia en desarrollo web, plataformas digitales y transformación institucional."}
+                    </p>
+
+                    <p id="doc-desktop-disclaimer" class="hidden text-xs text-muted-text font-mono leading-relaxed bg-surface-base/50 p-3 rounded-lg border border-main-border/20">
+                        {tDocViewer.certDisclaimer || "Vista previa del certificado. Los datos de verificación han sido protegidos."}
+                    </p>
+
+                    {/* BARRA DE ZOOM EN ESCRITORIO (CERTIFICADOS) */}
+                    <div id="doc-desktop-zoom-toolbar" class="hidden flex-col gap-2 pt-2 border-t border-main-border/20">
+                        <span class="text-[11px] font-mono uppercase text-muted-text font-bold">
+                            {tDocViewer.zoomLabel || "ESCALA DE LECTURA"}
+                        </span>
+                        <div class="flex items-center justify-between gap-1.5 bg-surface-base/80 p-1.5 rounded-xl border border-main-border/30">
+                            <button 
+                                id="doc-desktop-zoom-out"
+                                type="button"
+                                aria-label={tDocViewer.zoomOut || "Alejar documento"}
+                                class="inline-flex items-center justify-center p-2 rounded-lg bg-surface-soft/60 hover:bg-surface-soft text-primary-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                            >
+                                <ZoomOut className="w-4 h-4" />
+                            </button>
+
+                            <span 
+                                id="doc-desktop-zoom-level" 
+                                class="px-2 font-mono text-xs font-bold text-accent-cyan"
+                            >
+                                100%
+                            </span>
+
+                            <button 
+                                id="doc-desktop-zoom-in"
+                                type="button"
+                                aria-label={tDocViewer.zoomIn || "Acercar documento"}
+                                class="inline-flex items-center justify-center p-2 rounded-lg bg-surface-soft/60 hover:bg-surface-soft text-primary-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                            >
+                                <ZoomIn className="w-4 h-4" />
+                            </button>
+
+                            <div class="w-px h-4 bg-main-border/30 mx-1"></div>
+
+                            <button 
+                                id="doc-desktop-zoom-reset"
+                                type="button"
+                                aria-label={tDocViewer.zoomReset || "Restablecer escala a 100%"}
+                                class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-surface-soft text-xs font-mono text-secondary-text hover:text-primary-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                            >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                <span>100%</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2.5 pt-4 border-t border-main-border/20">
+                    <a 
+                        id="doc-desktop-open-link"
+                        href="/documentos/cv/mathias-solar-cv.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-soft hover:bg-surface-soft/80 border border-main-border/40 text-sm font-semibold text-primary-text hover:text-accent-cyan transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                    >
+                        <ExternalLink className="w-4 h-4 text-accent-cyan" />
+                        <span id="doc-desktop-open-text">{tDocViewer.openTab || "Abrir en otra pestaña"}</span>
+                    </a>
+
+                    <a 
+                        id="doc-desktop-download-link"
+                        href="/documentos/cv/mathias-solar-cv.pdf"
+                        download="mathias-solar-cv.pdf"
+                        class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-accent-cyan/15 hover:bg-accent-cyan/25 border border-accent-cyan/30 text-sm font-bold text-accent-cyan transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                    >
+                        <Download className="w-4 h-4" />
+                        <span id="doc-desktop-download-text">{tDocViewer.downloadCv || "Descargar CV"}</span>
+                    </a>
+
+                    <button 
+                        id="doc-desktop-close-btn"
+                        type="button"
+                        class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-soft/60 hover:bg-surface-soft border border-main-border/30 text-sm font-semibold text-secondary-text hover:text-primary-text transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan"
+                    >
+                        {tDocViewer.closeBtn || "Cerrar"}
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        {/* ========================================================================= */}
+        {/* VISTA MÓVIL Y TABLET VERTICAL (< 1024px): UNA SOLA ZONA DE SCROLL + STICKY */}
+        {/* ========================================================================= */}
+        <div class="flex lg:hidden flex-col h-full w-full overflow-hidden bg-surface-base">
+            
+            {/* ENCABEZADO STICKY COMPACTO DE MÓVIL (52px) */}
+            <div class="flex-shrink-0 h-[52px] px-4 flex items-center justify-between gap-3 border-b border-main-border/30 bg-surface-base/95 backdrop-blur-md z-30">
+                <h3 id="doc-mobile-header-title" class="text-sm font-bold text-primary-text truncate">
+                    {tDocViewer.cvTitle || "Currículum — Mathias Solar"}
+                </h3>
+                <button 
+                    id="doc-mobile-close-x"
+                    type="button"
+                    aria-label={tDocViewer.closeAria || "Cerrar modal"}
+                    class="p-2 rounded-xl text-secondary-text hover:text-primary-text bg-surface-soft/60 border border-main-border/20 shrink-0"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+
+            {/* ZONA DE LECTURA CENTRAL ÚNICA CON SCROLL NATIVO Y NÍTIDO */}
+            <div 
+                id="doc-mobile-scroll-container"
+                class="flex-grow overflow-auto overscroll-contain touch-pan-x touch-pan-y bg-black/60 p-3 flex flex-col items-center justify-start min-h-0"
+            >
+                <div class="w-full max-w-3xl my-auto flex flex-col items-center justify-center min-h-[300px]">
+                    <img 
+                        id="doc-mobile-img"
+                        src="/documentos/previews/curriculum-mathias-solar.webp"
+                        alt="Vista previa del documento"
+                        decoding="async"
+                        loading="lazy"
+                        class="w-full h-auto object-contain rounded-lg shadow-2xl transition-transform duration-200 select-none origin-top"
+                    />
+                </div>
+            </div>
+
+            {/* BARRA INFERIOR STICKY COMPACTA CON ACCIONES O ZOOM */}
+            <div class="flex-shrink-0 border-t border-main-border/30 bg-surface-base/95 backdrop-blur-md p-3 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] z-30 flex flex-col gap-2">
+                
+                {/* DETALLES DE CERTIFICADO EN MÓVIL (DESPLEGABLE COMPACTO COLLAPSED) */}
+                <details id="doc-mobile-cert-details" class="hidden text-xs font-mono border-b border-main-border/20 pb-2">
+                    <summary class="text-accent-cyan font-bold cursor-pointer hover:underline flex items-center justify-between">
+                        <span id="doc-mobile-cert-type">{tDocViewer.certInfo || "Información del certificado"}</span>
+                        <span class="text-[10px] text-muted-text">{tDocViewer.viewDetails || "Ver detalles ▼"}</span>
+                    </summary>
+                    <div class="mt-2 flex flex-col gap-1 text-secondary-text">
+                        <p id="doc-mobile-cert-institution" class="font-sans font-semibold text-primary-text"></p>
+                        <p id="doc-mobile-cert-meta-text" class="text-muted-text"></p>
+                        <p id="doc-mobile-cert-disclaimer" class="text-[11px] text-muted-text/80 mt-1 italic">
+                            {tDocViewer.certDisclaimer || "Vista previa del certificado. Los datos de verificación han sido protegidos."}
+                        </p>
+                    </div>
+                </details>
+
+                {/* ACCIONES DE CURRÍCULUM EN MÓVIL */}
+                <div id="doc-mobile-cv-actions" class="flex items-center gap-2 w-full">
+                    <a 
+                        id="doc-mobile-open-link"
+                        href="/documentos/cv/mathias-solar-cv.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-surface-soft border border-main-border/40 text-xs font-semibold text-primary-text hover:text-accent-cyan flex items-center justify-center gap-1.5 active:bg-surface-soft/80"
+                    >
+                        <ExternalLink className="w-3.5 h-3.5 text-accent-cyan" />
+                        <span id="doc-mobile-open-text">{tDocViewer.openBtn || "Abrir"}</span>
+                    </a>
+                    <a 
+                        id="doc-mobile-download-link"
+                        href="/documentos/cv/mathias-solar-cv.pdf"
+                        download="mathias-solar-cv.pdf"
+                        class="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-accent-cyan/15 border border-accent-cyan/30 text-xs font-bold text-accent-cyan flex items-center justify-center gap-1.5 active:bg-accent-cyan/25"
+                    >
+                        <Download className="w-3.5 h-3.5" />
+                        <span id="doc-mobile-download-text">{tDocViewer.downloadDoc || "Descargar"}</span>
+                    </a>
+                    <button 
+                        id="doc-mobile-cv-close"
+                        type="button"
+                        class="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-surface-soft/60 border border-main-border/30 text-xs font-semibold text-secondary-text hover:text-primary-text flex items-center justify-center active:bg-surface-soft"
+                    >
+                        {tDocViewer.closeBtn || "Cerrar"}
+                    </button>
+                </div>
+
+                {/* CONTROLES DE ZOOM DE CERTIFICADO EN MÓVIL */}
+                <div id="doc-mobile-cert-actions" class="hidden flex-col gap-2 w-full">
+                    <div class="flex items-center justify-between gap-1.5 w-full bg-surface-soft/40 p-1 rounded-xl border border-main-border/20">
+                        <button 
+                            id="doc-mobile-zoom-out"
+                            type="button"
+                            aria-label={tDocViewer.zoomOut || "Alejar"}
+                            class="flex-1 min-h-[40px] rounded-lg bg-surface-base border border-main-border/30 text-primary-text font-bold text-sm flex items-center justify-center disabled:opacity-30"
+                        >
+                            <ZoomOut className="w-4 h-4" />
+                        </button>
+                        <span id="doc-mobile-zoom-level" class="px-2 font-mono text-xs font-bold text-accent-cyan min-w-[45px] text-center">
+                            100%
+                        </span>
+                        <button 
+                            id="doc-mobile-zoom-in"
+                            type="button"
+                            aria-label={tDocViewer.zoomIn || "Acercar"}
+                            class="flex-1 min-h-[40px] rounded-lg bg-surface-base border border-main-border/30 text-primary-text font-bold text-sm flex items-center justify-center disabled:opacity-30"
+                        >
+                            <ZoomIn className="w-4 h-4" />
+                        </button>
+                        <button 
+                            id="doc-mobile-zoom-reset"
+                            type="button"
+                            aria-label={tDocViewer.zoomReset || "Restablecer"}
+                            class="px-3 min-h-[40px] rounded-lg bg-surface-base border border-main-border/30 text-xs font-mono text-secondary-text flex items-center justify-center"
+                        >
+                            <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                            <span>100%</span>
+                        </button>
+                    </div>
+
+                    <button 
+                        id="doc-mobile-cert-close"
+                        type="button"
+                        class="w-full min-h-[42px] px-4 py-2 rounded-xl bg-surface-soft/80 border border-main-border/30 text-xs font-semibold text-primary-text flex items-center justify-center"
+                    >
+                        {tDocViewer.closeBtn || "Cerrar"}
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</dialog>
+
+<script>
+    const dialog = document.getElementById('doc-viewer-dialog') as HTMLDialogElement | null;
+    
+    // Cierres globales
+    const desktopCloseX = document.getElementById('doc-modal-close-x');
+    const desktopCloseBtn = document.getElementById('doc-desktop-close-btn');
+    const mobileCloseX = document.getElementById('doc-mobile-close-x');
+    const mobileCvClose = document.getElementById('doc-mobile-cv-close');
+    const mobileCertClose = document.getElementById('doc-mobile-cert-close');
+
+    // Elementos Escritorio
+    const desktopObject = document.getElementById('doc-desktop-object') as HTMLObjectElement | null;
+    const desktopImgContainer = document.getElementById('doc-desktop-img-container');
+    const desktopImg = document.getElementById('doc-desktop-img') as HTMLImageElement | null;
+    
+    const desktopCategory = document.getElementById('doc-desktop-category');
+    const desktopTitle = document.getElementById('doc-desktop-title');
+    const desktopInstitution = document.getElementById('doc-desktop-institution');
+    const desktopCertMeta = document.getElementById('doc-desktop-cert-meta');
+    const desktopMetaYear = document.getElementById('doc-desktop-meta-year');
+    const desktopMetaDuration = document.getElementById('doc-desktop-meta-duration');
+    const desktopMetaScore = document.getElementById('doc-desktop-meta-score');
+
+    const desktopDesc = document.getElementById('doc-desktop-desc');
+    const desktopDisclaimer = document.getElementById('doc-desktop-disclaimer');
+    const desktopZoomToolbar = document.getElementById('doc-desktop-zoom-toolbar');
+    
+    const desktopOpenLink = document.getElementById('doc-desktop-open-link') as HTMLAnchorElement | null;
+    const desktopDownloadLink = document.getElementById('doc-desktop-download-link') as HTMLAnchorElement | null;
+    const desktopDownloadText = document.getElementById('doc-desktop-download-text');
+
+    const desktopZoomOut = document.getElementById('doc-desktop-zoom-out') as HTMLButtonElement | null;
+    const desktopZoomIn = document.getElementById('doc-desktop-zoom-in') as HTMLButtonElement | null;
+    const desktopZoomReset = document.getElementById('doc-desktop-zoom-reset') as HTMLButtonElement | null;
+    const desktopZoomLevel = document.getElementById('doc-desktop-zoom-level');
+
+    // Elementos Móvil
+    const mobileHeaderTitle = document.getElementById('doc-mobile-header-title');
+    const mobileImg = document.getElementById('doc-mobile-img') as HTMLImageElement | null;
+    const mobileCvActions = document.getElementById('doc-mobile-cv-actions');
+    const mobileCertActions = document.getElementById('doc-mobile-cert-actions');
+    const mobileCertDetails = document.getElementById('doc-mobile-cert-details') as HTMLDetailsElement | null;
+    
+    const mobileCertType = document.getElementById('doc-mobile-cert-type');
+    const mobileCertInstitution = document.getElementById('doc-mobile-cert-institution');
+    const mobileCertMetaText = document.getElementById('doc-mobile-cert-meta-text');
+    const mobileCertDisclaimer = document.getElementById('doc-mobile-cert-disclaimer');
+
+    const mobileOpenLink = document.getElementById('doc-mobile-open-link') as HTMLAnchorElement | null;
+    const mobileDownloadLink = document.getElementById('doc-mobile-download-link') as HTMLAnchorElement | null;
+
+    const mobileZoomOut = document.getElementById('doc-mobile-zoom-out') as HTMLButtonElement | null;
+    const mobileZoomIn = document.getElementById('doc-mobile-zoom-in') as HTMLButtonElement | null;
+    const mobileZoomReset = document.getElementById('doc-mobile-zoom-reset') as HTMLButtonElement | null;
+    const mobileZoomLevel = document.getElementById('doc-mobile-zoom-level');
+
+    const ZOOM_LEVELS = [75, 100, 125, 150, 175, 200];
+    let currentZoomIdx = 1; // 100% por defecto
+    let activeTriggerBtn: HTMLElement | null = null;
+
+    const updateZoom = () => {
+        const zoomVal = ZOOM_LEVELS[currentZoomIdx];
+        
+        // Zoom Escritorio
+        if (desktopImg) {
+            desktopImg.style.width = `${zoomVal}%`;
+            desktopImg.style.maxWidth = 'none';
+        }
+        if (desktopZoomLevel) desktopZoomLevel.textContent = `${zoomVal}%`;
+        if (desktopZoomOut) desktopZoomOut.disabled = currentZoomIdx === 0;
+        if (desktopZoomIn) desktopZoomIn.disabled = currentZoomIdx === ZOOM_LEVELS.length - 1;
+
+        // Zoom Móvil
+        if (mobileImg) {
+            mobileImg.style.width = `${zoomVal}%`;
+            mobileImg.style.maxWidth = 'none';
+        }
+        if (mobileZoomLevel) mobileZoomLevel.textContent = `${zoomVal}%`;
+        if (mobileZoomOut) mobileZoomOut.disabled = currentZoomIdx === 0;
+        if (mobileZoomIn) mobileZoomIn.disabled = currentZoomIdx === ZOOM_LEVELS.length - 1;
+    };
+
+    // Delegación central de eventos para soportar elementos dinámicos / React
+    document.addEventListener('click', (e) => {
+        const button = (e.target as HTMLElement | null)?.closest('[data-doc-trigger]') as HTMLElement | null;
+        if (!button) return;
+
+        activeTriggerBtn = button;
+        const mode = button.getAttribute('data-doc-mode') || 'image';
+        const title = button.getAttribute('data-doc-title') || (dialog?.dataset.cvTitle || 'Vista previa de documento');
+        const type = button.getAttribute('data-doc-type') || 'CERTIFICADO';
+        const institution = button.getAttribute('data-doc-institution') || '';
+        const year = button.getAttribute('data-doc-year') || '';
+        const duration = button.getAttribute('data-doc-duration') || '';
+        const score = button.getAttribute('data-doc-score') || '';
+
+        const pdfSrc = button.getAttribute('data-doc-src') || '/documentos/cv/mathias-solar-cv.pdf';
+        const imgPreviewSrc = button.getAttribute('data-doc-img') || '/documentos/previews/curriculum-mathias-solar.webp';
+        const alt = button.getAttribute('data-doc-alt') || 'Vista previa del documento';
+        
+        let disclaimer = button.getAttribute('data-doc-disclaimer') || dialog?.dataset.certDisclaimer || 'Vista previa del certificado. Los datos han sido protegidos.';
+        const downloadFilename = button.getAttribute('data-doc-filename') || 'mathias-solar-cv.pdf';
+
+        const spanishNote = dialog?.dataset.spanishNote || '';
+        const isSpanish = (dialog?.dataset.lang || 'es') === 'es';
+
+        // Título Móvil
+        if (mobileHeaderTitle) mobileHeaderTitle.textContent = title;
+
+        if (mode === 'pdf') {
+            // =========================================================================
+            // CONFIGURACIÓN MODO PDF (CURRÍCULUM)
+            // =========================================================================
+            
+            // ESCRITORIO
+            if (desktopObject) {
+                desktopObject.classList.remove('hidden');
+                desktopObject.data = pdfSrc;
+                desktopObject.setAttribute('title', title);
+            }
+            if (desktopImgContainer) desktopImgContainer.classList.add('hidden');
+            if (desktopZoomToolbar) desktopZoomToolbar.classList.add('hidden');
+
+            if (desktopCategory) desktopCategory.textContent = dialog?.dataset.cvCategory || 'CURRÍCULUM VITAE';
+            if (desktopTitle) desktopTitle.textContent = title;
+            if (desktopInstitution) desktopInstitution.classList.add('hidden');
+            if (desktopCertMeta) desktopCertMeta.classList.add('hidden');
+            if (desktopDesc) {
+                desktopDesc.classList.remove('hidden');
+                let descText = dialog?.dataset.cvDesc || 'Ingeniero en Informática con experiencia en desarrollo web, plataformas digitales y transformación institucional.';
+                if (!isSpanish && spanishNote) {
+                    descText += ` (${spanishNote})`;
+                }
+                desktopDesc.textContent = descText;
+            }
+            if (desktopDisclaimer) desktopDisclaimer.classList.add('hidden');
+
+            if (desktopOpenLink) {
+                desktopOpenLink.classList.remove('hidden');
+                desktopOpenLink.href = pdfSrc;
+            }
+            if (desktopDownloadLink) {
+                desktopDownloadLink.classList.remove('hidden');
+                desktopDownloadLink.href = pdfSrc;
+                desktopDownloadLink.setAttribute('download', downloadFilename);
+            }
+            if (desktopDownloadText) {
+                desktopDownloadText.textContent = dialog?.dataset.downloadCv || 'Descargar CV';
+            }
+
+            // MÓVIL
+            if (mobileImg) {
+                mobileImg.src = imgPreviewSrc;
+                mobileImg.alt = alt;
+                mobileImg.style.width = '100%';
+                mobileImg.style.maxWidth = '100%';
+            }
+            if (mobileCvActions) mobileCvActions.classList.remove('hidden');
+            if (mobileCertActions) mobileCertActions.classList.add('hidden');
+            if (mobileCertDetails) mobileCertDetails.classList.add('hidden');
+
+            if (mobileOpenLink) mobileOpenLink.href = pdfSrc;
+            if (mobileDownloadLink) {
+                mobileDownloadLink.href = pdfSrc;
+                mobileDownloadLink.setAttribute('download', downloadFilename);
+            }
+
+        } else {
+            // =========================================================================
+            // CONFIGURACIÓN MODO IMAGEN (CERTIFICADOS WEBP)
+            // =========================================================================
+
+            // ESCRITORIO
+            if (desktopObject) desktopObject.classList.add('hidden');
+            if (desktopImgContainer) desktopImgContainer.classList.remove('hidden');
+            if (desktopZoomToolbar) desktopZoomToolbar.classList.remove('hidden');
+
+            if (desktopCategory) desktopCategory.textContent = type.toUpperCase();
+            if (desktopTitle) desktopTitle.textContent = title;
+            
+            if (institution && desktopInstitution) {
+                desktopInstitution.textContent = institution;
+                desktopInstitution.classList.remove('hidden');
+            } else if (desktopInstitution) {
+                desktopInstitution.classList.add('hidden');
+            }
+
+            if (desktopCertMeta) desktopCertMeta.classList.remove('hidden');
+            if (desktopMetaYear && year) {
+                desktopMetaYear.textContent = year;
+                desktopMetaYear.classList.remove('hidden');
+            } else if (desktopMetaYear) {
+                desktopMetaYear.classList.add('hidden');
+            }
+
+            if (desktopMetaDuration && duration) {
+                desktopMetaDuration.textContent = duration;
+                desktopMetaDuration.classList.remove('hidden');
+            } else if (desktopMetaDuration) {
+                desktopMetaDuration.classList.add('hidden');
+            }
+
+            if (desktopMetaScore && score) {
+                desktopMetaScore.textContent = score;
+                desktopMetaScore.classList.remove('hidden');
+            } else if (desktopMetaScore) {
+                desktopMetaScore.classList.add('hidden');
+            }
+
+            if (desktopDesc) desktopDesc.classList.add('hidden');
+            if (desktopDisclaimer) {
+                desktopDisclaimer.textContent = disclaimer;
+                desktopDisclaimer.classList.remove('hidden');
+            }
+
+            if (desktopOpenLink) desktopOpenLink.classList.add('hidden');
+            if (desktopDownloadLink) desktopDownloadLink.classList.add('hidden');
+
+            if (desktopImg) {
+                desktopImg.src = imgPreviewSrc;
+                desktopImg.alt = alt;
+            }
+
+            // MÓVIL (CERTIFICADOS)
+            if (mobileImg) {
+                mobileImg.src = imgPreviewSrc;
+                mobileImg.alt = alt;
+            }
+            if (mobileCvActions) mobileCvActions.classList.add('hidden');
+            if (mobileCertActions) mobileCertActions.classList.remove('hidden');
+            if (mobileCertDetails) {
+                mobileCertDetails.classList.remove('hidden');
+                mobileCertDetails.open = false;
+            }
+
+            if (mobileCertType) mobileCertType.textContent = type;
+            if (mobileCertInstitution) mobileCertInstitution.textContent = institution;
+            
+            let metaText = year;
+            if (duration) metaText += ` • ${duration}`;
+            if (score) metaText += ` • ${score}`;
+            if (mobileCertMetaText) mobileCertMetaText.textContent = metaText;
+            if (mobileCertDisclaimer) mobileCertDisclaimer.textContent = disclaimer;
+
+            currentZoomIdx = 1; // 100%
+            updateZoom();
+        }
+
+        if (dialog && typeof dialog.showModal === 'function') {
+            dialog.showModal();
+            document.body.style.overflow = 'hidden';
+        }
+    });
+
+    // Eventos Zoom Escritorio y Móvil
+    [desktopZoomOut, mobileZoomOut].forEach(btn => {
+        if (btn) btn.addEventListener('click', () => {
+            if (currentZoomIdx > 0) { currentZoomIdx--; updateZoom(); }
+        });
+    });
+
+    [desktopZoomIn, mobileZoomIn].forEach(btn => {
+        if (btn) btn.addEventListener('click', () => {
+            if (currentZoomIdx < ZOOM_LEVELS.length - 1) { currentZoomIdx++; updateZoom(); }
+        });
+    });
+
+    [desktopZoomReset, mobileZoomReset].forEach(btn => {
+        if (btn) btn.addEventListener('click', () => {
+            currentZoomIdx = 1; updateZoom();
+        });
+    });
+
+    const closeModal = () => {
+        if (dialog && dialog.open) {
+            dialog.close();
+            document.body.style.overflow = '';
+            if (activeTriggerBtn) {
+                activeTriggerBtn.focus();
+            }
+        }
+    };
+
+    [desktopCloseX, desktopCloseBtn, mobileCloseX, mobileCvClose, mobileCertClose].forEach(btn => {
+        if (btn) btn.addEventListener('click', closeModal);
+    });
+
+    if (dialog) {
+        dialog.addEventListener('click', (e) => {
+            const rect = dialog.getBoundingClientRect();
+            const isInDialog = (
+                rect.top <= e.clientY &&
+                e.clientY <= rect.bottom &&
+                rect.left <= e.clientX &&
+                e.clientX <= rect.right
+            );
+            if (!isInDialog) {
+                closeModal();
+            }
+        });
+
+        dialog.addEventListener('close', () => {
+            document.body.style.overflow = '';
+        });
+    }
+</script>

@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../ui/Navbar.jsx';
+import Hero from '../sections/Hero.jsx';
+import EarthCanvas from '../canvas/EarthCanvas.jsx';
+import AboutTabs from '../sections/AboutTabs.jsx';
+import Experience from '../sections/Experience.jsx';
+import Projects from '../sections/Projects.jsx';
+import Contact from '../sections/Contact.jsx';
+import DocumentViewerModal from '../ui/DocumentViewerModal.astro';
+import Footer from '../ui/Footer.astro';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+
+const HOME_META = {
+  es: {
+    title: "Mathias Solar | Ingeniero en Informática",
+    description: "Ingeniero en Informática enfocado en desarrollo de software, plataformas digitales, infraestructura y transformación digital desde la Región de Aysén."
+  },
+  en: {
+    title: "Mathias Solar | Software Engineer",
+    description: "Software Engineer focused on software development, digital platforms, infrastructure, and digital transformation from the Aysén Region."
+  },
+  fr: {
+    title: "Mathias Solar | Ingénieur Logiciel",
+    description: "Ingénieur Logiciel spécialisé dans le développement logiciel, les plateformes numériques, l'infrastructure et la transformation numérique depuis la région d'Aysén."
+  },
+  pt: {
+    title: "Mathias Solar | Engenheiro de Software",
+    description: "Engenheiro de Software com foco em desenvolvimento de software, plataformas digitais, infraestrutura e transformação digital a partir da Região de Aysén."
+  },
+  "zh": {
+    title: "Mathias Solar | 软件工程师",
+    description: "软件工程师，专注于软件开发、数字平台、基础设施和数字化转型，来自艾森大区。"
+  },
+  "zh-CN": {
+    title: "Mathias Solar | 软件工程师",
+    description: "软件工程师，专注于软件开发、数字平台、基础设施和数字化转型，来自艾森大区。"
+  }
+};
+
+const meta = HOME_META[lang] || HOME_META.es;
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Mathias Solar",
+  "jobTitle": "Ingeniero en Informática",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Coyhaique",
+    "addressRegion": "Región de Aysén",
+    "addressCountry": "CL"
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/mathias-solar-98a947261/",
+    "https://github.com/MathiasSolar",
+    "https://open.spotify.com/user/21wod7l6rqfeffjvxlay27uja?si=4ec4578b942d49f7"
+  ]
+};
+---
+
+<Layout 
+    title={meta.title}
+    description={meta.description}
+    lang={lang}
+    jsonLd={personJsonLd}
+>
+    <Navbar client:load currentPage="home" currentLocale={lang} />
+
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none">
+        <Hero client:idle lang={lang}>
+            <EarthCanvas client:only="react" />
+        </Hero>
+        
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
+
+        <AboutTabs client:visible lang={lang} />
+
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
+
+        <Experience client:visible lang={lang} />
+
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
+
+        <Projects client:visible lang={lang} />
+
+        <div class="w-full flex items-center justify-center my-0 relative z-20 pointer-events-none">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-main-border/30 to-transparent"></div>
+            <div class="absolute p-1.5 bg-main-bg border border-main-border/30 rounded-full flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse shadow-[0_0_8px_var(--accent-cyan)]"></div>
+            </div>
+        </div>
+
+        <Contact client:visible lang={lang} />
+    </main>
+
+    <DocumentViewerModal lang={lang} />
+    <Footer lang={lang} />
+</Layout>

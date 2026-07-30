@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# La referencia al Sitemap se agregará cuando se defina el dominio de producción en astro.config

@@ -1,0 +1,235 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../ui/Navbar.jsx';
+import Breadcrumbs from '../ui/Breadcrumbs.astro';
+import Footer from '../ui/Footer.astro';
+import DocumentViewerModal from '../ui/DocumentViewerModal.astro';
+import { ShieldCheck, Eye } from 'lucide-react';
+import { localizedUrl, getSupportedLocale } from '../../i18n/utils';
+import { translations } from '../../i18n/translations';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'es' } = Astro.props;
+const currentLocale = getSupportedLocale(lang || Astro.params.lang || 'es');
+const tEducationPage = ((translations as any)[currentLocale] || translations.es).educationPage;
+const tDocViewer = ((translations as any)[currentLocale] || translations.es).documentViewer;
+
+const BASE_CREDENTIALS = [
+  {
+    id: "cert-titulo",
+    num: "01",
+    year: "2025",
+    previewImg: "/documentos/previews/titulo-ingeniero-informatico-utfsm.webp"
+  },
+  {
+    id: "cert-licenciatura",
+    num: "02",
+    year: "2025",
+    previewImg: "/documentos/previews/licenciatura-ingenieria-informatica-utfsm.webp"
+  },
+  {
+    id: "cert-cea",
+    num: "03",
+    year: "2026",
+    durationVal: "30 horas cronológicas",
+    scoreVal: "98,67 %",
+    previewImg: "/documentos/previews/induccion-administracion-estado-cea.webp"
+  }
+];
+
+const credentialsData = BASE_CREDENTIALS.map((base, idx) => {
+  const itemTrans = (tEducationPage.credentials || [])[idx] || {};
+  let disclaimerText = tDocViewer.certDisclaimer || "Vista previa del certificado. Los datos de verificación han sido protegidos.";
+  if (currentLocale !== 'es' && tDocViewer.spanishNote) {
+    disclaimerText += ` (${tDocViewer.spanishNote})`;
+  }
+  return {
+    ...base,
+    title: itemTrans.title || "",
+    institution: itemTrans.institution || "",
+    type: itemTrans.type || "",
+    btnText: itemTrans.btnText || "",
+    imgAlt: itemTrans.imgAlt || "",
+    duration: base.durationVal ? (itemTrans.duration || base.durationVal) : undefined,
+    score: base.scoreVal ? base.scoreVal : undefined,
+    scoreLabel: itemTrans.scoreLabel || "Calificación",
+    disclaimer: disclaimerText
+  };
+});
+
+const otherStudiesData = (tEducationPage.otherStudies || []).map((item: any) => ({
+  year: "2026",
+  title: item.title,
+  institution: item.institution,
+  status: item.status,
+  description: item.description
+}));
+---
+
+<Layout 
+    title={tEducationPage.metaTitle || "Formación y credenciales | Mathias Solar"}
+    description={tEducationPage.metaDesc || "Formación profesional, títulos universitarios y acreditaciones continuas de Mathias Solar en informática y gestión pública."}
+    lang={currentLocale}
+>
+    <Navbar client:load currentPage="about" currentLocale={currentLocale} />
+
+    <main id="main-content" tabindex="-1" class="relative z-10 outline-none pt-32 pb-24 md:pt-40 md:pb-32">
+        <Breadcrumbs lang={currentLocale} items={[{ label: 'Inicio', href: '/' }, { label: tEducationPage.title || 'Formación y credenciales' }]} />
+
+        <div class="max-w-7xl mx-auto px-6 flex flex-col gap-12 md:gap-16">
+            
+            {/* ENCABEZADO DE PÁGINA */}
+            <div class="flex flex-col gap-3 text-center md:text-left">
+                <span class="text-xs font-mono tracking-widest uppercase text-accent-cyan font-bold">
+                    {tEducationPage.badge || "PERFIL ACADÉMICO Y CREDENCIALES"}
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-text tracking-tight leading-tight">
+                    {tEducationPage.title || "Formación & Credenciales"}
+                </h1>
+                <p class="text-lg md:text-xl text-secondary-text max-w-3xl leading-relaxed mt-1">
+                    {tEducationPage.lead}
+                </p>
+            </div>
+
+            {/* SECCIÓN 1: CREDENCIALES VERIFICADAS */}
+            <div class="flex flex-col gap-8">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tEducationPage.sectionCredentials || "Títulos y Certificados Verificados"}
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-main-border/20"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    {credentialsData.map((item) => (
+                        <article class="flex flex-col justify-between gap-5 p-6 rounded-2xl bg-surface-soft/40 border border-main-border/20 hover:border-accent-cyan/30 transition-colors">
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-xs font-mono font-bold text-accent-cyan tracking-wider">
+                                        {item.num}
+                                    </span>
+                                    <span class="text-xs font-mono text-muted-text">
+                                        {item.year}
+                                    </span>
+                                </div>
+
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-[11px] font-mono uppercase text-secondary-text tracking-wider">
+                                        {item.type}
+                                    </span>
+                                    <h3 class="text-xl font-bold text-primary-text leading-snug">
+                                        {item.title}
+                                    </h3>
+                                    <h4 class="text-xs md:text-sm font-medium text-secondary-text/90 mt-1">
+                                        {item.institution}
+                                    </h4>
+                                </div>
+
+                                {(item.duration || item.score) && (
+                                    <div class="flex flex-wrap items-center gap-2 pt-2 text-xs font-mono text-accent-cyan">
+                                        {item.duration && (
+                                            <span class="bg-accent-cyan/10 border border-accent-cyan/20 px-2.5 py-0.5 rounded-md">
+                                                {item.duration}
+                                            </span>
+                                        )}
+                                        {item.score && (
+                                            <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-2.5 py-0.5 rounded-md">
+                                                {item.scoreLabel}: {item.score}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <button 
+                                type="button"
+                                data-doc-trigger
+                                data-doc-mode="image"
+                                data-doc-title={item.title}
+                                data-doc-type={item.type}
+                                data-doc-institution={item.institution}
+                                data-doc-year={item.year}
+                                data-doc-duration={item.duration || ''}
+                                data-doc-score={item.score ? `${item.scoreLabel}: ${item.score}` : ''}
+                                data-doc-img={item.previewImg}
+                                data-doc-alt={item.imgAlt}
+                                data-doc-disclaimer={item.disclaimer}
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-surface-soft hover:bg-surface-soft/80 border border-main-border/30 text-xs md:text-sm font-semibold text-primary-text hover:text-accent-cyan transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan w-full mt-2 cursor-pointer"
+                            >
+                                <Eye className="w-4 h-4 text-accent-cyan" />
+                                {item.btnText}
+                            </button>
+                        </article>
+                    ))}
+                </div>
+            </div>
+
+            {/* SECCIÓN 2: OTROS ESTUDIOS EN CURSO */}
+            <div class="flex flex-col gap-6 pt-2">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tEducationPage.sectionOther || "Especializaciones en Curso"}
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-main-border/20"></div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6">
+                    {otherStudiesData.map((item: any) => (
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-surface-soft/20 border border-main-border/10">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-3 mb-1">
+                                    <span class="text-xs font-mono text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/20 px-3 py-0.5 rounded-full font-medium">
+                                        {item.status}
+                                    </span>
+                                    <span class="text-xs font-mono text-muted-text">{item.year}</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-primary-text">{item.title}</h3>
+                                <p class="text-sm text-secondary-text font-medium">{item.institution}</p>
+                                <p class="text-xs md:text-sm text-secondary-text/80 mt-2 leading-relaxed max-w-3xl">
+                                    {item.description}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* SECCIÓN 3: PROTECCIÓN DE DATOS */}
+            <div class="flex flex-col gap-6 pt-2">
+                <div class="flex items-center gap-4">
+                    <h2 class="text-xs font-mono uppercase tracking-widest text-muted-text font-bold">
+                        {tEducationPage.sectionProtection || "Protección & Verificación"}
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-main-border/20"></div>
+                </div>
+
+                <div class="p-6 rounded-2xl border border-main-border/20 bg-surface-soft/30 flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <ShieldCheck className="w-5 h-5 text-accent-cyan" />
+                        <h3 class="text-base md:text-lg font-bold text-primary-text">
+                            {tEducationPage.privacyTitle || "Privacidad y Protección de Datos"}
+                        </h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-secondary-text leading-relaxed max-w-4xl">
+                        {tEducationPage.privacyDesc}
+                    </p>
+                </div>
+            </div>
+
+            {/* BOTÓN REGRESO A INICIO */}
+            <div class="flex justify-center md:justify-start pt-4">
+                <a href={localizedUrl('/', currentLocale)} class="inline-flex items-center gap-2 text-sm font-bold text-primary-text hover:text-accent-cyan transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 rounded">
+                    <svg class="w-4 h-4 rotate-180 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    {tEducationPage.backHome || "Volver al inicio"}
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <DocumentViewerModal lang={currentLocale} />
+    <Footer lang={currentLocale} />
+</Layout>
